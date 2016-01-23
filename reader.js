@@ -103,13 +103,13 @@ var getRestString = function(string, nextSymbol, nextString) {
     return cleanList[0];
 };
 
-var readSlideMarkdown = function(string, slideNumber) {
+var readSlideMarkdown = function(slideString) {
     //var slideNumber = i + 1;
     var currentSlideDict = {};
 
     // loop as long as string is > 0
     var currentString = slideString;
-    var stringLength = currentString.length;
+    //var stringLength = currentString.length;
 
     for (i = 0; i < 100; i++) {
 
@@ -119,6 +119,7 @@ var readSlideMarkdown = function(string, slideNumber) {
         // that point and repeat with the resulting string -> also I need
         // the index of the next following markdown to cut the string between
         // first and second index
+        //console.log("current: " + currentString);
         var nextSymbol = getNextSymbol(currentString);  
         //console.log("current string: " + currentString);
         //console.log("next symbol: " + nextSymbol);
@@ -154,26 +155,21 @@ var readSlideMarkdown = function(string, slideNumber) {
     return currentSlideDict;
 };
 
-$(document).ready(function() {
-    
-    var rawMarkdown = markdown;
-    var rawSymbols = symbols;
-    
+var read = function(markdown, symbols) {
     var resultDict = {};
 
-    var slides = markdown.split(rawSymbols.newslide);
+    var slides = markdown.split(symbols.newslide);
     slides.forEach(function(slideString, i) {
-        if (i < 1) {  // only first slide for test
-            
-            var slideDict = readSlideMarkdown(i + 1, slideString);
-            resultDict["slide1"] = slideDict;
-        };   
+        var slideNumber = i + 1;  
+        var slideDict = readSlideMarkdown(slideString);
+        resultDict[slideNumber] = slideDict;     
     });
 
-    //console.log("END RESULT");
-    //for (var key in currentSlideDict) {
-    //    console.log(key + ": " + currentSlideDict[key])
-    //}
-    //console.log(resultDict);
+    return resultDict;
+};
+
+$(document).ready(function() {
+    
+    var resultDict = read(markdown, symbols);
 
 });

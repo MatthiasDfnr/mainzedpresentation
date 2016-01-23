@@ -85,7 +85,6 @@ QUnit.test("getRestString following strings test", function(assert)  {
 	restString = getRestString(testString, nextSymbol, nextString);
 	assert.equal(restString, "[note] another body text");
 
-
 	testString = restString;
 	nextSymbol = getNextSymbol(testString);  
 	assert.equal(nextSymbol, "normaltext");
@@ -97,18 +96,20 @@ QUnit.test("getRestString following strings test", function(assert)  {
 
 QUnit.test("readSlideMarkdown test", function(assert)  {
 	var testString = "## This is the title [note] This is the body of the slide! [note] another body text";
-	
-	var result = readSlideMarkdown(1, testString); 
+	var result = readSlideMarkdown(testString); 
 	var expected = {
-		"slide1": {
-			"This is the title": "title",
-			"This is the body of the slide!": "normaltext",
-			"another body text": "normaltext"
-		}
-	}
-	var nextSymbol = getNextSymbol(testString);  
-	var nextString = getNextString(testString, nextSymbol);
-	var restString = getRestString(testString, nextSymbol, nextString);
-	assert.equal(restString, "[note] This is the body of the slide! [note] another body text");
-
+		"This is the title": "title",
+		"This is the body of the slide!": "normaltext",
+		"another body text": "normaltext"
+	};
+	assert.equal(result, expected);
+	
+	testString = "## This is the title ## This is the body of the slide! [big] another body text";
+	result = readSlideMarkdown(testString); 
+	expected = {
+		"This is the title": "title",
+		"This is the body of the slide!": "title",
+		"another body text": "bigtext"
+	};
+	assert.equal(result, expected);
 });
