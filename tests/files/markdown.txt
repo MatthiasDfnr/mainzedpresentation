@@ -1,0 +1,20 @@
+## title on the very first slide 
+
+[note] normal text on the first slide
+
+[note] more normal text on the first slide
+
+## another title on the first page
+
+--- 
+
+## title of the second slide 
+
+[note] this is normal text on the second slide
+[big] this is some big text on the second slide after the normal text
+
+--- 
+
+## this is a title on the third slide
+
+[big] big text on the third slide
