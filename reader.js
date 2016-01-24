@@ -1,10 +1,3 @@
-var symbols = {
-    title: "##",
-    newslide: "---", 
-    normaltext: "[note]",
-    bigtext: "[big]",
-    image: ".jpg"
-};
 
 function Reader() {
     //console.log("init new reader");
@@ -105,19 +98,49 @@ function Reader() {
         var markdown = symbols[nextSymbol];
         //console.log("previous result: " + nextString);
         //console.log("next symbol: " + nextSymbol);
-        var splitNew = string.split(markdown + " " + nextString + " "); // add the removed whitespace
-        //console.log(splitNew);
+
+        /*var splitNew = string.split(markdown + " " + nextString + " "); // add the removed whitespace
+        // workaround!
+
+        //console.log(cleanList[0]);
         var cleanList = [];
+        console.log(splitNew);
         splitNew.forEach(function(part) {
             if (part.length > 0) {
                 cleanList.push(part);
+            } else {
+                console.log("first part of array is empty!");
+                // empty string, check if they are new lines
+                 if (part.indexOf("\n\n") > -1) {  // if newline is first thing
+                    
+                    //newString = cleanList[1];
+                    console.log("new line on position: " + splitNew[0].indexOf("\n"));
+                    //console.log("found empty line in: " + splitNew[0]);
+                    //console.log("used next instead: " + cleanList[1]);
+                };
             }
-        });
+        });*/
+        
+        //newString = cleanList[0];
 
-        if (cleanList[0] === string) {
+        // workaround!
+        var replaceString = markdown + " " + nextString + " ";
+        console.log("old: " + string);
+        console.log("replacing: " + replaceString);
+        //console.log("match: " + string.match(replaceString));
+        // remove the first occurance
+        var newString = string.replace(replaceString, "");
+        //console.log(newString);
+        
+        //str = str.replace(',', ''); // Remove the first one
+        
+
+        console.log("rest: " + newString);
+        
+        if (newString === string) {
             return undefined;
-        }
-        return cleanList[0];
+        };
+        return newString;
     };
 
     Reader.prototype.readSlideMarkdown = function(slideString) {
@@ -125,7 +148,7 @@ function Reader() {
 
         var currentString = slideString;
         for (i = 0; i < 100; i++) {
-
+            console.log("ROUND: " + i)
             // scan for symbol and use first one and save string to this point
 
             // check which symbol comes first -> use the index, then cut string at 
@@ -135,17 +158,17 @@ function Reader() {
             //console.log("current: " + currentString);
             var nextSymbol = this.getNextSymbol(currentString);  
             //console.log("current string: " + currentString);
-            //console.log("next symbol: " + nextSymbol);
+            console.log("next symbol: " + nextSymbol);
 
             var nextString = this.getNextString(currentString, nextSymbol);
-            //console.log("next String: " + nextString);  // this is wrong for last
+            console.log("next String: " + nextString);  // this is wrong for last
             
             // save step
             currentSlideDict[nextString] = nextSymbol;
-
+            console.log("after save!");
             // now remove the last string from the long one and repeat process
             var restString = this.getRestString(currentString, nextSymbol, nextString);
-            //console.log("string left: " + newString);
+            console.log("string left: " + restString);
             
 
             if (restString === undefined) {
@@ -173,6 +196,15 @@ function Reader() {
             // " ## title", will result in the first object being
             // assign the current slide string
             slideString = slideString.trim();
+            console.log("before: " + slideString);
+            
+            // remove all line breaks
+            var noBreaks;
+            if (slideString.match(/\n/).length > 1) {
+                slideString = slideString.replace(/\n/, "");
+            }
+            
+            console.log("after: " + slideString);
 
             var slideDict = me.readSlideMarkdown(slideString);
             resultDict[slideNumber] = slideDict; 
@@ -206,23 +238,10 @@ $(document).ready(function() {
         "",
         "[note] normal text on the first slide",
         "",
-        "[note] more normal text on the first slide",
-        "",
-        "## another title on the first page",
-        "",
-        "---",
-        "",
-        "## title of the second slide",
-        "",
-        "[note] this is normal text on the second slide",
-        "[big] this is some big text on the second slide after the normal text",
-        "",
-        "---",
-        "",
-        "## this is a title on the third slide",
-        "",
-        "[big] asdasd nur text"
+        "[note] more normal text on the first slide"
     ].join('\n');
+    var reader = new Reader();
+    reader.read(myString);
 
-    console.log(myString);
+    //console.log(myString);
 });

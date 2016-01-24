@@ -141,7 +141,7 @@ QUnit.test("read test", function(assert)  {
     var result = this.reader.read(testString);    
     assert.equal(JSON.stringify(result), JSON.stringify(expected));
 
-    testString = symbols.title + " This is the title " + symbols.bigtext + " more text " + symbols.newslide + " " + symbols.normaltext + " This is the body of the slide! " + symbols.title + " ueberschrift " + symbols.newslide + " " + symbols.normaltext + " more";
+    testString = "## This is the title [big] more text --- [note] This is the body of the slide! ## ueberschrift --- [note] more";
     expected = {
         "1": {
             "This is the title": "title",
@@ -158,57 +158,6 @@ QUnit.test("read test", function(assert)  {
     result = this.reader.read(testString);
     assert.equal(JSON.stringify(result), JSON.stringify(expected));
 });
-/*
-QUnit.test("actual markdown file test", function(assert)  {
-    console.log("start test");
-    // get text file
-
-    function onSuccess(data) {
-        return this.reader.read(data);
-    };
-
-    var done = assert.async();
-    //var input = $( "#test-input" ).focus();
-    var expected = {
-        "1": {
-            "title on the very first slide": "title",
-            "normal text on the first slide": "normaltext",
-            "more normal text on the first slide": "normaltext",
-            "another title on the first page": "title"  
-        },
-        "2": {
-            "title of the second slide": "title",
-            "this is normal text on the second slide": "normaltext",
-            "this is some big text on the second slide after the normal text": "bigtext"    
-        },
-        "3": {
-            "this is a title on the third slide": "title",
-            "asdasd nur text": "bigtext"
-        }
-    }; 
-    var markdownString = "hm";
-
-    $.ajax({
-        url : "markdown.txt",
-        type : "get",
-        dataType: "text",
-        async: false,
-        success : function(data) {
-            markdownString = data;
-        }
-    });
-
-    //stop(1000); // wait a second
-
-    var result = this.reader.read(markdownString);
-
-    setTimeout(function() {
-        assert.equal(JSON.stringify(result), JSON.stringify(expected));
-        done();
-    });
-
-});
-*/
 
 QUnit.module("Reader Multi Line Tests", {
     beforeEach: function() {
@@ -229,57 +178,17 @@ QUnit.test("diverse tests", function(assert)  {
     var multiLineString = [
         "## title on the very first slide",
         "",
-        "[note] normal text on the first slide",
-        "",
-        "[note] more normal text on the first slide",
-        "",
-        "## another title on the first page",
-        "",
-        "---",
-        "",
-        "## title of the second slide",
-        "",
-        "[note] this is normal text on the second slide",
-        "[big] this is some big text on the second slide after the normal text",
-        "",
-        "---",
-        "",
-        "## this is a title on the third slide",
-        "",
-        "[big] asdasd nur text"
+        "[note] normal text on the first slide"
     ].join('\n');
 
-    var nextSymbol = this.reader.getNextSymbol(multiLineString);
-    assert.equal(nextSymbol, "title");
-     
-    var nextString = this.reader.getNextString(multiLineString, nextSymbol);
-    assert.equal(nextString, "title on the very first slide");
+    var expected = {
+        "title on the very first slide": "title",
+        "normal text on the first slide": "normaltext"
+    }; 
+    console.log("\n\n\nLAST\n\n\n");
 
-    var restString = this.reader.getRestString(multiLineString, nextSymbol, nextString);
-    var expectedString = [
-        //"## title on the very first slide",
-        "",
-        "[note] normal text on the first slide",
-        "",
-        "[note] more normal text on the first slide",
-        "",
-        "## another title on the first page",
-        "",
-        "---",
-        "",
-        "## title of the second slide",
-        "",
-        "[note] this is normal text on the second slide",
-        "[big] this is some big text on the second slide after the normal text",
-        "",
-        "---",
-        "",
-        "## this is a title on the third slide",
-        "",
-        "[big] asdasd nur text"
-    ].join('\n');
-    
-    assert.equal(restString, expectedString);
+    var result = this.reader.readSlideMarkdown(multiLineString);
+    assert.equal(JSON.stringify(result), JSON.stringify(expected));
 
 
 });
