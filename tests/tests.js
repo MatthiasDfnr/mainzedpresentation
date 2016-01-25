@@ -316,7 +316,12 @@ QUnit.test("writeElement Tests", function(assert)  {
 
     // title
     expected = "<h1>title on the very first slide</h1>";
+
+
+
     result = this.writer.writeElement(this.markdownObject, 1, 0);
+    
+
     assert.equal(result, expected, "returned title html");
 
     // normaltext

@@ -4,7 +4,9 @@ var onSuccess = function(data) {
     var markdownObject = newReader.read(data);
 
     newWriter = new Writer();
-    newWriter.write(markdownObject, 0);
+    $('body').append(newWriter.writeElement(markdownObject, 1, 0));
+    $('body').append(newWriter.writeElement(markdownObject, 2, 0));
+    $('body').append(newWriter.writeElement(markdownObject, 3, 0));
 
 };
 

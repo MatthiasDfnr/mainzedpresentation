@@ -12,9 +12,12 @@ function Writer() {
         
         if (element.style === "title") {
             html = "<h1>" + element.text + "</h1>";
+
         } else if (element.style === "bigtext") {
             html = "<b>" + element.text + "</b>";
+        
         } else {
+        
             html = "<p>" + element.text + "</p>";
         }   
                
