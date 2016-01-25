@@ -6,6 +6,7 @@ function Reader() {
         title: "##",
         newslide: "---", 
         normaltext: "[note]",
+        italics: "*",
         bigtext: "[big]",
         image: ".jpg"
     };

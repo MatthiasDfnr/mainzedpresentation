@@ -32,6 +32,10 @@ QUnit.test("getNextSymbol test", function(assert)  {
     result = this.reader.getNextSymbol(testString);
     assert.equal(result, "bigtext");
 
+    testString = "*This is in italics* ## whatever";
+    result = this.reader.getNextSymbol(testString);
+    assert.equal(result, "italics");
+
     // doube titles
     testString = "## This is the title ## whatever";
     result = this.reader.getNextSymbol(testString);
@@ -86,6 +90,15 @@ QUnit.test("getRestString test", function(assert)  {
     assert.equal(nextString, "This is the title");
     restString = this.reader.getRestString(testString, nextSymbol, nextString);
     assert.equal(restString, "[note] This is the body of the slide! ## ueberschrift");
+
+    // with italics
+    /*
+    testString = "[big] This is big text *This is in italics";
+    nextSymbol = this.reader.getNextSymbol(testString);  
+    nextString = this.reader.getNextString(testString, nextSymbol);
+    restString = this.reader.getRestString(testString, nextSymbol, nextString);
+
+    assert.equal(restString, "[note] This is the body of the slide! ## ueberschrift");*/
 });
 
 QUnit.test("getRestString following strings test", function(assert)  {
