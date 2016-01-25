@@ -12,8 +12,48 @@
 	<script src="reader.js"></script>
 	<script src="writer.js"></script>
 	<script src="app.js"></script>
+	<script>
+		$(document.documentElement).keyup(function (e) {
+		  //var $activeslide = $('.slides.active'), $targetslide;
+
+		  if (e.keyCode == 39)
+		  {
+		    // if ($activeslide.next('.slides').length) {}
+		   
+		    location.hash = "#slide2";
+		    
+		  }
+
+		  if (e.keyCode == 37)
+		  {
+		    // if ($activeslide.prev('.slides').length) {}
+		    location.hash = "#slide1";
+		      
+		  }
+
+		 
+
+		});
+	</script>
+	<style>
+		html, body {
+    		height: 100%;
+    		margin: 0;
+    		overflow: hidden;
+
+    	}
+
+    	.slide {
+    		min-height: 100%; 
+    	}
+		* {font-size: 80px; font-family: "Arimo"; margin: 0; padding: 0;}
+		.slide { }
+		#footer {font-family: "mainzed display type"; border-top: 2px solid black; width: 100%; position: fixed; bottom: 0;}
+	</style>
 </head>
 
 <body>
+	
+	<div id="footer">m</div>
 </body>
 </html>
