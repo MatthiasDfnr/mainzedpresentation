@@ -1,4 +1,13 @@
 
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+
+
 function Writer() {
     
     /** 
@@ -6,21 +15,31 @@ function Writer() {
      * position of the element (integer) and returns
      * a HTML string for the specified element
      */
-    Writer.prototype.writeElement = function(markdownObject, slideNumber, position) {
-        var html;
-        var element = markdownObject[slideNumber][position];
-        
-        if (element.style === "title") {
-            html = "<h1>" + element.text + "</h1>";
+    Writer.prototype.write = function(markdownObject) {
+        var html = "";
+        //var element = markdownObject[slideNumber][position];
 
-        } else if (element.style === "bigtext") {
-            html = "<b>" + element.text + "</b>";
-        
-        } else {
-        
-            html = "<p>" + element.text + "</p>";
-        }   
-               
+        var slideCounter = 1;
+        for (var key in markdownObject) {
+            var slide = markdownObject[key];
+            html += "<div class=slide id=slide" + slideCounter + ">";
+
+            for (var k in slide) {
+                var element = slide[k];
+                if (element.style === "title") {
+                    html += "<h1>" + element.text + "</h1>\n";
+
+                } else if (element.style === "bigtext") {
+                    html += "<p class='bigtext'>" + element.text + "</p>\n";
+                
+                } else {
+                    html += "<p>" + element.text + "</p>";
+                }
+            } 
+            html += "</div>\n\n";
+            slideCounter++;
+        }      
+                
         return html;
     };
 
