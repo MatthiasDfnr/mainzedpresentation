@@ -264,7 +264,7 @@ QUnit.test("multiline for multiple slides", function(assert)  {
     assert.equal(JSON.stringify(result), JSON.stringify(expected));
 });
 
-QUnit.module("markdown ajax tests", {
+/*QUnit.module("markdown ajax tests", {
     beforeEach: function() {
         // prepare something for all following tests
         this.reader = new Reader();
@@ -276,4 +276,57 @@ QUnit.module("markdown ajax tests", {
     afterEach: function() {
         // clean up after each test
     }
-}); 
+});*/ 
+
+QUnit.module("Writer Tests", {
+    beforeEach: function() {
+        // prepare something for all following tests
+        this.writer = new Writer();
+        this.markdownObject = {
+            "1": {
+                0: {
+                    style: "title",
+                    text: "title on the very first slide"
+                },
+                1: {
+                    style: "normaltext",
+                    text: "normal text on the first slide"
+                }
+            },
+            "2": {
+                0: {
+                    style: "title",
+                    text: "title on the second slide"
+                },
+                1: {
+                    style: "bigtext",
+                    text: "big text on the second slide"
+                }
+            }
+        }; 
+    },
+    afterEach: function() {
+        // clean up after each test
+    }
+});
+
+QUnit.test("writeElement Tests", function(assert)  {
+    var expected;
+    var result;
+
+    // title
+    expected = "<h1>title on the very first slide</h1>";
+    result = this.writer.writeElement(this.markdownObject, 1, 0);
+    assert.equal(result, expected, "returned title html");
+
+    // normaltext
+    expected = "<p>normal text on the first slide</p>";
+    result = this.writer.writeElement(this.markdownObject, 1, 1);
+    assert.equal(result, expected, "returned normaltext html");
+
+    // bigtext
+    expected = "<b>big text on the second slide</b>";
+    result = this.writer.writeElement(this.markdownObject, 2, 1);
+    assert.equal(result, expected, "returned bigtext html");
+
+});

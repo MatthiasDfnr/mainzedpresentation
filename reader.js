@@ -209,24 +209,3 @@ function Reader() {
         return resultDict;
     };
 }
-
-var onSuccess = function(data) {
-    //console.log(data);
-    newReader = new Reader();
-    console.log(data);
-    var result = newReader.read(data);
-
-    console.log(result);
-};
-
-$(document).ready(function() {
-
-    // get text file
-    $.get('tests/files/markdown.txt', function(data) {
-       onSuccess(data);
-    }, 'text');
-    
-
-
-    //console.log(myString);
-});
