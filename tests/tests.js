@@ -1,12 +1,8 @@
 
-QUnit.module("Reader Single Line Tests", {
+QUnit.module("Reader Tests", {
     beforeEach: function() {
         // prepare something for all following tests
         this.reader = new Reader();
-
-        // to be still able to use $.get instead of $.ajax
-        jQuery.ajaxSetup({async:false});
-
     },
     afterEach: function() {
         // clean up after each test
@@ -119,9 +115,18 @@ QUnit.test("getRestString following strings test", function(assert)  {
 QUnit.test("readSlideMarkdown test", function(assert)  {
     var testString = "## This is the title [note] This is the body of the slide! [note] another body text";
     var expected = {
-        "This is the title": "title", 
-        "This is the body of the slide!": "normaltext", 
-        "another body text": "normaltext"
+        0: {
+            style: "title", 
+            text: "This is the title"
+        }, 
+        1: {
+            style: "normaltext", 
+            text: "This is the body of the slide!"
+        },
+        2: {
+            style: "normaltext", 
+            text: "another body text"
+        }
     }; 
     var result = this.reader.readSlideMarkdown(testString);
     
@@ -132,10 +137,16 @@ QUnit.test("read test", function(assert)  {
     var testString = "## This is the title --- [note] This is the body of the slide!";
     var expected = {
         "1": {
-            "This is the title": "title"   
+            0: {
+                style: "title",
+                text: "This is the title"  
+            }
         } ,
         "2": {
-            "This is the body of the slide!": "normaltext"    
+            0: {
+                style: "normaltext",
+                text: "This is the body of the slide!"    
+            }
         }
     }; 
     var result = this.reader.read(testString);    
@@ -144,33 +155,34 @@ QUnit.test("read test", function(assert)  {
     testString = "## This is the title [big] more text --- [note] This is the body of the slide! ## ueberschrift --- [note] more";
     expected = {
         "1": {
-            "This is the title": "title",
-            "more text": "bigtext"   
+            0: {
+                style: "title",
+                text: "This is the title"
+            },
+            1: {
+                style: "bigtext",
+                text: "more text"
+            }
         } ,
         "2": {
-            "This is the body of the slide!": "normaltext",
-            "ueberschrift": "title"    
+            0: {
+                style: "normaltext",
+                text: "This is the body of the slide!"
+            },
+            1: {
+                style: "title",
+                text: "ueberschrift"
+            } 
         },
         "3": {
-            "more": "normaltext"
+            0: {
+                style: "normaltext",
+                text: "more"
+            }
         }
     }; 
     result = this.reader.read(testString);
     assert.equal(JSON.stringify(result), JSON.stringify(expected));
-});
-
-QUnit.module("Reader Multi Line Tests", {
-    beforeEach: function() {
-        // prepare something for all following tests
-        this.reader = new Reader();
-
-        // to be still able to use $.get instead of $.ajax
-        jQuery.ajaxSetup({async:false});
-
-    },
-    afterEach: function() {
-        // clean up after each test
-    }
 });
 
 QUnit.test("multiline for single slide", function(assert)  {
@@ -183,8 +195,14 @@ QUnit.test("multiline for single slide", function(assert)  {
 
     var expected = {
         "1": {
-            "title on the very first slide": "title",
-            "normal text on the first slide": "normaltext"    
+            0: {
+                style: "title",
+                text: "title on the very first slide"
+            },
+            1: {
+                style: "normaltext",
+                text: "normal text on the first slide"
+            } 
         }
     }; 
 
@@ -208,12 +226,24 @@ QUnit.test("multiline for multiple slides", function(assert)  {
 
     var expected = {
         "1": {
-            "title on the very first slide": "title",
-            "normal text on the first slide": "normaltext"    
+            0: {
+                style: "title",
+                text: "title on the very first slide"
+            },
+            1: {
+                style: "normaltext",
+                text: "normal text on the first slide"
+            }
         },
         "2": {
-            "title on the second slide": "title",
-            "big text on the second slide": "bigtext"  
+            0: {
+                style: "title",
+                text: "title on the second slide"
+            },
+            1: {
+                style: "bigtext",
+                text: "big text on the second slide"
+            }
         }
     }; 
 
@@ -221,4 +251,16 @@ QUnit.test("multiline for multiple slides", function(assert)  {
     assert.equal(JSON.stringify(result), JSON.stringify(expected));
 });
 
-    
+QUnit.module("markdown ajax tests", {
+    beforeEach: function() {
+        // prepare something for all following tests
+        this.reader = new Reader();
+
+        // to be still able to use $.get instead of $.ajax
+        jQuery.ajaxSetup({async:false});
+
+    },
+    afterEach: function() {
+        // clean up after each test
+    }
+}); 

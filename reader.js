@@ -136,7 +136,7 @@ function Reader() {
 
         var currentString = slideString;
         for (i = 0; i < 100; i++) {
-            console.log("ROUND: " + i);
+            //console.log("ROUND: " + i);
             // scan for symbol and use first one and save string to this point
 
             // check which symbol comes first -> use the index, then cut string at 
@@ -151,8 +151,13 @@ function Reader() {
             var nextString = this.getNextString(currentString, nextSymbol);
             //console.log("next String: " + nextString);  // this is wrong for last
             
+            // form object
+            var currentObj = {};
+            currentObj["style"] = nextSymbol;
+            currentObj["text"] = nextString;
+
             // save step
-            currentSlideDict[nextString] = nextSymbol;
+            currentSlideDict[i] = currentObj;
 
             // now remove the last string from the long one and repeat process
             var restString = this.getRestString(currentString, nextSymbol, nextString);
