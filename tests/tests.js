@@ -173,7 +173,7 @@ QUnit.module("Reader Multi Line Tests", {
     }
 });
 
-QUnit.test("diverse tests", function(assert)  {
+QUnit.test("multiline for single slide", function(assert)  {
 
     var multiLineString = [
         "## title on the very first slide",
@@ -182,15 +182,43 @@ QUnit.test("diverse tests", function(assert)  {
     ].join('\n');
 
     var expected = {
-        "title on the very first slide": "title",
-        "normal text on the first slide": "normaltext"
+        "1": {
+            "title on the very first slide": "title",
+            "normal text on the first slide": "normaltext"    
+        }
     }; 
-    console.log("\n\n\nLAST\n\n\n");
 
-    var result = this.reader.readSlideMarkdown(multiLineString);
+    var result = this.reader.read(multiLineString);
     assert.equal(JSON.stringify(result), JSON.stringify(expected));
+});
 
+QUnit.test("multiline for multiple slides", function(assert)  {
 
+    var multiLineString = [
+        "## title on the very first slide",
+        "",
+        "[note] normal text on the first slide",
+        "",
+        "---",
+        "",
+        "## title on the second slide",
+        "",
+        "[big] big text on the second slide"
+    ].join('\n');
+
+    var expected = {
+        "1": {
+            "title on the very first slide": "title",
+            "normal text on the first slide": "normaltext"    
+        },
+        "2": {
+            "title on the second slide": "title",
+            "big text on the second slide": "bigtext"  
+        }
+    }; 
+
+    var result = this.reader.read(multiLineString);
+    assert.equal(JSON.stringify(result), JSON.stringify(expected));
 });
 
     
