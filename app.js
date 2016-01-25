@@ -4,9 +4,8 @@ var onSuccess = function(data) {
     var markdownObject = newReader.read(data);
 
     newWriter = new Writer();
-    $('body').append(newWriter.writeElement(markdownObject, 1, 0));
-    $('body').append(newWriter.writeElement(markdownObject, 2, 0));
-    $('body').append(newWriter.writeElement(markdownObject, 3, 0));
+    $('body').append(newWriter.write(markdownObject));
+    
 
 };
 
@@ -18,3 +17,38 @@ $(document).ready(function() {
     }, 'text');
 
 });
+
+
+		var currentslide = 1;
+		$(document.documentElement).keydown(function (e) {
+		  //var $activeslide = $('.slides.active'), $targetslide;
+
+		  if (e.keyCode == 39)
+		  {
+		  	
+
+		    // if ($activeslide.next('.slides').length) {}
+		    if (currentslide < $('.slide').length){
+		    	currentslide += 1;
+		    	location.hash = "#slide" + currentslide;
+		    	
+
+		    }
+		  }
+
+		  if (e.keyCode == 37)
+		  {
+		  	console.log(currentslide);
+		    // if ($activeslide.prev('.slides').length) {}
+		    if (currentslide > 1) {
+		    	currentslide -= 1;
+		    	location.hash = "#slide" + currentslide;
+		    	
+		    }
+		    
+		      
+		  }
+
+		 
+
+		});
