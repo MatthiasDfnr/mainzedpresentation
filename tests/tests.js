@@ -46,6 +46,11 @@ QUnit.test("getNextSymbol test", function(assert)  {
     result = this.reader.getNextSymbol(testString);
     assert.equal(result, "title");
 
+    // added whitespace
+    testString = "[image] bild.jpg ## whatever ";
+    result = this.reader.getNextSymbol(testString);
+    assert.equal(result, "image");
+
     // empty
     testString = "";
     result = this.reader.getNextSymbol(testString);
@@ -72,6 +77,11 @@ QUnit.test("getNextString test", function(assert)  {
     nextSymbol = this.reader.getNextSymbol(testString);  
     result = this.reader.getNextString(testString, nextSymbol);
     assert.equal(result, "This is the big body!");
+
+    testString = "[image] bild.jpg ## This is the title ";
+    nextSymbol = this.reader.getNextSymbol(testString);  
+    result = this.reader.getNextString(testString, nextSymbol);
+    assert.equal(result, "bild.jpg");
 });
 
 QUnit.test("getRestString test", function(assert)  {
@@ -90,6 +100,14 @@ QUnit.test("getRestString test", function(assert)  {
     assert.equal(nextString, "This is the title");
     restString = this.reader.getRestString(testString, nextSymbol, nextString);
     assert.equal(restString, "[note] This is the body of the slide! ## ueberschrift");
+
+    testString = "[image] bild.jpg ## This is the title ";
+    nextSymbol = this.reader.getNextSymbol(testString);  
+    assert.equal(nextSymbol, "image");  // ## + 
+    nextString = this.reader.getNextString(testString, nextSymbol);
+    assert.equal(nextString, "bild.jpg");
+    restString = this.reader.getRestString(testString, nextSymbol, nextString);
+    assert.equal(restString, "## This is the title ", "image ok");
 
     // with italics
     /*
@@ -126,7 +144,7 @@ QUnit.test("getRestString following strings test", function(assert)  {
 });
 
 QUnit.test("readSlideMarkdown test", function(assert)  {
-    var testString = "## This is the title [note] This is the body of the slide! [note] another body text";
+    var testString = "## This is the title [note] This is the body of the slide! [note] another body text [image] bild.jpg";
     var expected = {
         0: {
             style: "title", 
@@ -139,6 +157,10 @@ QUnit.test("readSlideMarkdown test", function(assert)  {
         2: {
             style: "normaltext", 
             text: "another body text"
+        },
+        3: {
+            style: "image",
+            text: "bild.jpg"
         }
     }; 
     var result = this.reader.readSlideMarkdown(testString);

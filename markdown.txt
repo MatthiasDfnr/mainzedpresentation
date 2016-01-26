@@ -1,8 +1,14 @@
 ## myueberschrift 
 
+[note] 1
+
 [note] hello this is a big text 
 
 [note] this is more normal text 
+
+[note] hello hello
+
+---
 
 ## another ueberschrift 
 
@@ -10,7 +16,9 @@
 
 ## anothertitle 
 
-[note] asdasd 
+Koala.jpg
+[image]  Koala.jpg
+[image] Koala.jpg
 
 --- 
 

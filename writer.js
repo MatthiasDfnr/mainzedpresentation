@@ -32,6 +32,9 @@ function Writer() {
                 } else if (element.style === "bigtext") {
                     html += "<p class='bigtext'>" + element.text + "</p>\n";
                 
+                } else if (element.style === "image") {
+                    html += "<img src='" + element.text + "'/>";
+
                 } else {
                     html += "<p>" + element.text + "</p>";
                 }

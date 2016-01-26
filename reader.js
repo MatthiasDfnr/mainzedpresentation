@@ -8,7 +8,7 @@ function Reader() {
         normaltext: "[note]",
         italics: "*",
         bigtext: "[big]",
-        image: ".jpg"
+        image: "[image]"
     };
 
     // private
