@@ -33,7 +33,7 @@ function Writer() {
                     html += "<p class='bigtext'>" + element.text + "</p>\n";
 
                 } else if (element.style === "image") {
-                    html += "<img src='" + element.text + "' />\n";
+                    html += this.writeImage(element) + "\n";
 
                 } else {
                     html += "<p>" + element.text + "</p>\n";
@@ -44,6 +44,10 @@ function Writer() {
         }
 
         return html;
+    };
+
+    Writer.prototype.writeImage = function(element) {
+        return "<img src='" + element.text + "' />";
     };
 
     /**
