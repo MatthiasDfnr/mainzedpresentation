@@ -2,28 +2,32 @@
 
 ---
 
-## myueberschrift 
+## title on 2nd slide!
 
-[note] 1
+[note] first paragraph on 2nd slide
 
-[note] hello this is a big text 
+[note] second paragraph on 2nd slide
 
-[note] this is more normal text 
+[note] third paragraph on 2nd slide
 
-[note] hello hello
+[note] last paragraph on 2nd slide
 
 ---
 
-## another ueberschrift 
+## title on 3nd slide!
 
---- 
+[note] only paragraph on 2nd slide
 
-## anothertitle 
+## another title on 3nd slide!
 
-Koala.jpg
-[image]  Koala.jpg
+---
+
+## title on 4th slide!
+
+[note] some text above the image
 [image] Koala.jpg
+[note] some text below the image
 
---- 
+---
 
-[big] asdasd nur text
+[big] big text on the last slide

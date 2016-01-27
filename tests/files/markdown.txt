@@ -1,20 +1,33 @@
-## title on the very first slide 
+[big] digitalität und diversität
 
-[note] normal text on the first slide
+---
 
-[note] more normal text on the first slide
+## title on 2nd slide!
 
-## another title on the first page
+[note] first paragraph on 2nd slide
 
---- 
+[note] second paragraph on 2nd slide
 
-## title of the second slide 
+[note] third paragraph on 2nd slide
 
-[note] this is normal text on the second slide
-[big] this is some big text on the second slide after the normal text
+[note] last paragraph on 2nd slide
 
---- 
+---
 
-## this is a title on the third slide
+## title on 3nd slide!
 
-[big] big text on the third slide
+[note] only paragraph on 2nd slide
+
+## another title on 3nd slide!
+
+---
+
+## title on 4th slide!
+
+[note] some text above the image
+[image] Koala.jpg
+[note] some text below the image
+
+---
+
+[big] big text on the last slide

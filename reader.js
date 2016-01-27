@@ -1,10 +1,10 @@
 
 function Reader() {
-    
+
     // private static
     var symbols = {
         title: "##",
-        newslide: "---", 
+        newslide: "---",
         normaltext: "[note]",
         italics: "*",
         bigtext: "[big]",
@@ -19,12 +19,12 @@ function Reader() {
     // TODO: implement parameter to select 2nd or 3rd symbol
     // of a string
     Reader.prototype.getNextSymbol = function(string) {
-            
+
         // record all records
         var resultDict = {};
         for (var key in symbols) {
             var index = string.indexOf(symbols[key]);
-            
+
             if (index > -1) {
                 //console.log("searching: " + string);
                 //console.log("search for: " + symbols[key]);
@@ -36,10 +36,10 @@ function Reader() {
         // determine lowest
         //console.log(resultDict);
         var values = [];
-        for(var k in resultDict) values.push(k);   
+        for(var k in resultDict) values.push(k);
         var lowestIndex = Array.min(values);
         var nextSymbol = resultDict[lowestIndex];
-        
+
         return nextSymbol;
     };
 
@@ -53,7 +53,7 @@ function Reader() {
 
         // split  // TODO: check if title follows another title
         var splitStrings = string.split(nextMarkdown);
-        
+
         // remove empty strings
         // TODO: clean up more so the first element is the correct one!
         var removedEmtpyStrings = [];
@@ -61,7 +61,7 @@ function Reader() {
             if (splitString.length > 0) {
                 removedEmtpyStrings.push(splitString);
             }
-        }); 
+        });
         //console.log("--------");
         //console.log(removedEmtpyStrings[0]);
         //console.log("------------");
@@ -77,7 +77,7 @@ function Reader() {
 
         //console.log("supposed next symbol!:" + currentNextSymbol);
         //console.log(currentNextSymbol);
-        nextMarkdown = symbols[currentNextSymbol];   
+        nextMarkdown = symbols[currentNextSymbol];
         //console.log("supposed next markdown!:" + nextMarkdown);
 
         // use the next symbol to split this short string a second time
@@ -86,7 +86,7 @@ function Reader() {
         // TODO: trim white space: function trim()
 
         var result = nextString.split(nextMarkdown)[0].trim();
-        
+
         return result;
     };
 
@@ -118,7 +118,7 @@ function Reader() {
             newString = undefined;
         }
 
-        
+
         if (newString === undefined || newString === "") {
             return undefined;
         } else {
@@ -130,7 +130,7 @@ function Reader() {
      * returns object containing information on the current slide and
      * it's content. parameter "slideString" must not contain line breaks.
      * don't use this function as a standalone function, but use this.read
-     * instead. this.read removes linebreaks before calling this function  
+     * instead. this.read removes linebreaks before calling this function
      */
     Reader.prototype.readSlideMarkdown = function(slideString) {
         var currentSlideDict = {};
@@ -140,18 +140,18 @@ function Reader() {
             //console.log("ROUND: " + i);
             // scan for symbol and use first one and save string to this point
 
-            // check which symbol comes first -> use the index, then cut string at 
+            // check which symbol comes first -> use the index, then cut string at
             // that point and repeat with the resulting string -> also I need
             // the index of the next following markdown to cut the string between
             // first and second index
             //console.log("current: " + currentString);
-            var nextSymbol = this.getNextSymbol(currentString);  
+            var nextSymbol = this.getNextSymbol(currentString);
             //console.log("current string: " + currentString);
             //console.log("next symbol: " + nextSymbol);
 
             var nextString = this.getNextString(currentString, nextSymbol);
             //console.log("next String: " + nextString);  // this is wrong for last
-            
+
             // form object
             var currentObj = {};
             currentObj["style"] = nextSymbol;
@@ -162,7 +162,7 @@ function Reader() {
 
             // now remove the last string from the long one and repeat process
             var restString = this.getRestString(currentString, nextSymbol, nextString);
-            
+
 
             if (restString === undefined) {
                 //console.log("DONE! BREAK!");
@@ -179,10 +179,15 @@ function Reader() {
         var me = this;
         var resultDict = {};
 
+        // check for empty markdownstring
+        if (markdownString.length < 1) {
+            console.log("provided markdown string is empty!");
+        }
+
         var slides = markdownString.split(symbols.newslide);
 
         slides.forEach(function(slideString, i) {
-            var slideNumber = i + 1;  
+            var slideNumber = i + 1;
 
             // trim whitespace for entire slide string
             // if you dont do this, a trailing whitespace like
@@ -190,20 +195,20 @@ function Reader() {
             // assign the current slide string
             slideString = slideString.trim();
             //console.log("before: " + slideString);
-            
+
             // all line breaks get removed earlier
             // remove all line breaks -> cannot use readSlideMarkdown without
             // this function first, because readSlideMarkdown doesnt work with line breaks
             while (slideString.indexOf("\n") > -1) {
                 slideString = slideString.replace(/\n/, "");
             }
-            
+
             //console.log("after: " + slideString);
             //console.log("found something: " + slideString.match(/\n/).length);
 
             var slideDict = me.readSlideMarkdown(slideString);
-            resultDict[slideNumber] = slideDict; 
-            //console.log(slideDict);    
+            resultDict[slideNumber] = slideDict;
+            //console.log(slideDict);
         });
 
         return resultDict;
