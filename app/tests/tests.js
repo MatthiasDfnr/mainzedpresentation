@@ -48,7 +48,7 @@ QUnit.test("getNextSymbol test", function(assert)  {
     assert.equal(result, "header2");
 
     // added whitespace
-    testString = "[image] bild.jpg ## whatever ";
+    testString = "[image] (bild.jpg, 'caption', 'reference') ## whatever ";
     result = this.reader.getNextSymbol(testString);
     assert.equal(result, "image");
 
@@ -79,10 +79,10 @@ QUnit.test("getNextString test", function(assert)  {
     result = this.reader.getNextString(testString, nextSymbol);
     assert.equal(result, "This is the big body!");
 
-    testString = "[image] bild.jpg ## This is the title ";
+    testString = "[image] (bild.jpg, 'caption', 'reference') ## This is the title ";
     nextSymbol = this.reader.getNextSymbol(testString);
     result = this.reader.getNextString(testString, nextSymbol);
-    assert.equal(result, "bild.jpg");
+    assert.equal(result, "(bild.jpg, 'caption', 'reference')");
 });
 
 QUnit.test("getRestString test", function(assert)  {
@@ -145,7 +145,7 @@ QUnit.test("getRestString following strings test", function(assert)  {
 });
 
 QUnit.test("readSlideMarkdown test", function(assert)  {
-    var testString = "## This is the title [note] This is the body of the slide! [note] another body text [image] bild.jpg";
+    var testString = "## This is the title [note] This is the body of the slide! [note] another body text [image] (bild.jpg, 'caption', 'reference')";
     var expected = {
         0: {
             style: "header2",

@@ -94,6 +94,82 @@ function Reader() {
     };
 
     /**
+     * Determines the string that corresponds to the current symbol.
+     * returns an object with all specifications
+     */
+    Reader.prototype.getNextElement = function(string, nextSymbol) {
+
+        var element = {};  // object to return
+
+        // get next markdown
+        var nextMarkdown = symbols[nextSymbol];
+
+        // split  // TODO: check if title follows another title
+        var splitStrings = string.split(nextMarkdown);
+
+        // remove empty strings
+        // TODO: clean up more so the first element is the correct one!
+        var removedEmtpyStrings = [];
+        splitStrings.forEach(function(splitString) {
+            if (splitString.length > 0) {
+                removedEmtpyStrings.push(splitString);
+            }
+        });
+        //console.log("--------");
+        //console.log(removedEmtpyStrings[0]);
+        //console.log("------------");
+
+        var nextString = removedEmtpyStrings[0];
+
+        // clean string after next markdown
+        // use also nextString method, just for this short string
+
+
+        var currentNextSymbol = this.getNextSymbol(nextString); /// this is wrong
+
+
+        //console.log("supposed next symbol!:" + currentNextSymbol);
+        //console.log(currentNextSymbol);
+        nextMarkdown = symbols[currentNextSymbol];
+        //console.log("supposed next markdown!:" + nextMarkdown);
+
+        // use the next symbol to split this short string a second time
+        // remove the tail
+
+        // TODO: trim white space: function trim()
+
+        var result = nextString.split(nextMarkdown)[0].trim();
+
+
+        // append to element
+        element.style = nextSymbol;
+        element.text = result;
+
+
+        // intercept images because they are still in this format
+        // (url, caption, reference)
+        // only use url for now
+        if (nextSymbol === "image") {
+            //console.log("image found!");
+
+            // remove braces
+            while (result.indexOf("(") > -1) {
+                result = result.replace("(", "");
+            }
+            while (result.indexOf(")") > -1) {
+                result = result.replace(")", "");
+            }
+
+            // select url, discard rest for now
+            result = result.split(",")[0];
+            element.text = result;
+            //console.log(result);
+        }
+
+        return element;
+    };
+
+    /**
      * Determine the remaining string
      */
     Reader.prototype.getRestString = function(string, nextSymbol, nextString) {
@@ -152,18 +228,19 @@ function Reader() {
             //console.log("current string: " + currentString);
             //console.log("next symbol: " + nextSymbol);
 
-            var nextString = this.getNextString(currentString, nextSymbol);
+            var element = this.getNextElement(currentString, nextSymbol);
             //console.log("next String: " + nextString);  // this is wrong for last
 
             // form object
-            var currentObj = {};
-            currentObj.style = nextSymbol;
-            currentObj.text = nextString;
+            //var currentObj = {};
+            //currentObj.style = nextSymbol;
+            //currentObj.text = nextString;
 
             // save step
-            currentSlideDict[i] = currentObj;
+            currentSlideDict[i] = element;
 
             // now remove the last string from the long one and repeat process
+            var nextString = this.getNextString(currentString, nextSymbol);
             var restString = this.getRestString(currentString, nextSymbol, nextString);
 
 

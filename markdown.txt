@@ -25,7 +25,7 @@
 # title on 4th slide!
 
 [note] some text above the image
-[image] Koala.jpg
+[image] (Koala.jpg, "Caption this!", "http://www.koalas.com")
 [note] some text below the image
 
 ---
