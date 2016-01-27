@@ -445,6 +445,7 @@ QUnit.module("Writer", {
     beforeEach: function() {
         // prepare something for all following tests
         this.writer = new Writer();
+        this.linebreak = this.writer.LINEBREAK;
     },
     afterEach: function() {
         // clean up after each test
@@ -460,9 +461,9 @@ QUnit.test("write title", function(assert)  {
             }
         }
     };
-    var expected = "<div class='slide' id='slide1'>\n" +
-                 "<h1>title on the very first slide</h1>\n" +
-               "</div>\n\n";
+    var expected = "<div class='slide' id='slide1'>" + this.linebreak +
+                 "<h1>title on the very first slide</h1>" + this.linebreak +
+               "</div>" + this.linebreak + this.linebreak;
     var result = this.writer.write(markdownObject);
     assert.equal(result, expected, "returned title html");
 });
@@ -482,10 +483,10 @@ QUnit.test("write normaltext", function(assert)  {
             }
         }
     };
-    var expected = "<div class='slide' id='slide1'>\n" +
-                 "<h1>title on the very first slide</h1>\n" +
-                 "<p>the body of the first slide</p>\n" +
-               "</div>\n\n";
+    var expected = "<div class='slide' id='slide1'>" + this.linebreak +
+                 "<h1>title on the very first slide</h1>" + this.linebreak +
+                 "<p>the body of the first slide</p>" + this.linebreak +
+               "</div>" + this.linebreak + this.linebreak;
     var result = this.writer.write(markdownObject);
     assert.equal(result, expected, "returned normaltext html");
 });
@@ -513,12 +514,12 @@ QUnit.test("write bigtext", function(assert)  {
             }
         }
     };
-    var expected = "<div class='slide' id='slide1'>\n" +
-                 "<h3>title on the very first slide</h3>\n" +
-                 "<p>the body of the first slide</p>\n" +
-                 "<p class='bigtext'>some big text</p>\n" +
-                 "<p>the 2nd body</p>\n" +
-               "</div>\n\n";
+    var expected = "<div class='slide' id='slide1'>" + this.linebreak +
+                 "<h3>title on the very first slide</h3>" + this.linebreak +
+                 "<p>the body of the first slide</p>" + this.linebreak +
+                 "<p class='bigtext'>some big text</p>" + this.linebreak +
+                 "<p>the 2nd body</p>" + this.linebreak +
+               "</div>" + this.linebreak + this.linebreak;
     var result = this.writer.write(markdownObject);
     assert.equal(result, expected, "returned bigtext html");
 });
@@ -546,12 +547,12 @@ QUnit.test("write image", function(assert)  {
             }
         }
     };
-    var expected = "<div class='slide' id='slide1'>\n" +
-                 "<h1>title on the very first slide</h1>\n" +
-                 "<p>the body of the first slide</p>\n" +
-                 "<img src='Koala.jpg' />\n" +
-                 "<p>the 2nd body</p>\n" +
-               "</div>\n\n";
+    var expected = "<div class='slide' id='slide1'>" + this.linebreak +
+                 "<h1>title on the very first slide</h1>" + this.linebreak +
+                 "<p>the body of the first slide</p>" + this.linebreak +
+                 "<img src='Koala.jpg' />" + this.linebreak +
+                 "<p>the 2nd body</p>" + this.linebreak +
+               "</div>" + this.linebreak + this.linebreak;
     var result = this.writer.write(markdownObject);
     assert.equal(result, expected, "returned image html");
 });
@@ -597,18 +598,18 @@ QUnit.test("write multiple slides", function(assert)  {
             }
         }
     };
-    var expected = "<div class='slide' id='slide1'>\n" +
-                     "<h1>title on the very first slide</h1>\n" +
-                     "<p>the body of the first slide</p>\n" +
-                     "<img src='Koala.jpg' />\n" +
-                     "<p>the 2nd body</p>\n" +
-                   "</div>\n\n" +
-                   "<div class='slide' id='slide2'>\n" +
-                     "<p class='bigtext'>some text on the 2nd slide</p>\n" +
-                     "<img src='Koala1.jpg' />\n" +
-                     "<img src='Koala2.jpg' />\n" +
-                     "<p>text below the two images</p>\n" +
-                   "</div>\n\n";
+    var expected = "<div class='slide' id='slide1'>" + this.linebreak +
+                     "<h1>title on the very first slide</h1>" + this.linebreak +
+                     "<p>the body of the first slide</p>" + this.linebreak +
+                     "<img src='Koala.jpg' />" + this.linebreak +
+                     "<p>the 2nd body</p>" + this.linebreak +
+                   "</div>" + this.linebreak + this.linebreak +
+                   "<div class='slide' id='slide2'>" + this.linebreak +
+                     "<p class='bigtext'>some text on the 2nd slide</p>" + this.linebreak +
+                     "<img src='Koala1.jpg' />" + this.linebreak +
+                     "<img src='Koala2.jpg' />" + this.linebreak +
+                     "<p>text below the two images</p>" + this.linebreak +
+                   "</div>" + this.linebreak + this.linebreak;
     var result = this.writer.write(markdownObject);
     assert.equal(result, expected, "returned multiple slides html");
 });
@@ -658,15 +659,15 @@ QUnit.test("write table of content", function(assert)  {
             }
         }
     };
-    var expected = "<div id='content'>\n" +
-                        "<ul>\n" +
-                            "<li><a href='#slide1'>title on the very first slide 1</a></li>\n" +
-                            "<li><a href='#slide2'>first title on 2nd slide 2</a></li>\n" +
-                            "<li><a href='#slide2'>second title on 2nd slide 2</a></li>\n" +
-                            "<li><a href='#slide3'>title on the third slide 3</a></li>\n" +
-                            "<li><a href='#slide4'>title on the last slide 4</a></li>\n" +
-                        "</ul>\n" +
-                   "</div>\n\n";
+    var expected = "<div id='content'>" + this.linebreak +
+                        "<ul>" + this.linebreak +
+                            "<li><a href='#slide1'>title on the very first slide 1</a></li>" + this.linebreak +
+                            "<li><a href='#slide2'>first title on 2nd slide 2</a></li>" + this.linebreak +
+                            "<li><a href='#slide2'>second title on 2nd slide 2</a></li>" + this.linebreak +
+                            "<li><a href='#slide3'>title on the third slide 3</a></li>" + this.linebreak +
+                            "<li><a href='#slide4'>title on the last slide 4</a></li>" + this.linebreak +
+                        "</ul>" + this.linebreak +
+                   "</div>" + this.linebreak + this.linebreak;
     var result = this.writer.writeTableOfContent(markdownObject);
     assert.equal(result, expected, "returned content html");
 });
@@ -692,6 +693,9 @@ QUnit.module("DOM", {
 
         // write html
         this.writer = new Writer();
+        //this.linebreak = this.writer.LINEBREAK;
+        //linebreaks not needed -> will be converted to \n in DOM
+
         var generatedHtml = this.writer.write(markdownObject);
 
         // append generated html to specific div that is not visible

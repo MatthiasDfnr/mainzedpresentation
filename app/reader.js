@@ -193,7 +193,6 @@ function Reader() {
             ready = true;
 
         } else {
-
             newString = undefined;
         }
 
@@ -279,8 +278,14 @@ function Reader() {
             // all line breaks get removed earlier
             // remove all line breaks -> cannot use readSlideMarkdown without
             // this function first, because readSlideMarkdown doesnt work with line breaks
+            while (slideString.indexOf("\r\n") > -1) {
+                slideString = slideString.replace(/\r/, "");
+            }
             while (slideString.indexOf("\n") > -1) {
                 slideString = slideString.replace(/\n/, "");
+            }
+            while (slideString.indexOf("\r") > -1) {
+                slideString = slideString.replace(/\r/, "");
             }
 
             //console.log("after: " + slideString);
