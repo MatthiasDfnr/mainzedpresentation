@@ -2,7 +2,7 @@
 
 ---
 
-## title on 2nd slide!
+# title on 2nd slide!
 
 [note] first paragraph on 2nd slide
 
@@ -14,15 +14,15 @@
 
 ---
 
-## title on 3nd slide!
+# title on 3nd slide!
 
 [note] only paragraph on 2nd slide
 
-## another title on 3nd slide!
+## subtitle on 3nd slide!
 
 ---
 
-## title on 4th slide!
+# title on 4th slide!
 
 [note] some text above the image
 [image] Koala.jpg

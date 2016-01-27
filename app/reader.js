@@ -1,9 +1,12 @@
+"use strict";
 
 function Reader() {
 
     // private static
     var symbols = {
-        title: "##",
+        header1: "#",
+        header2: "##",
+        header3: "###",
         newslide: "---",
         normaltext: "[note]",
         italics: "*",
@@ -136,7 +139,7 @@ function Reader() {
         var currentSlideDict = {};
 
         var currentString = slideString;
-        for (i = 0; i < 100; i++) {
+        for (var i = 0; i < 100; i++) {
             //console.log("ROUND: " + i);
             // scan for symbol and use first one and save string to this point
 
@@ -154,8 +157,8 @@ function Reader() {
 
             // form object
             var currentObj = {};
-            currentObj["style"] = nextSymbol;
-            currentObj["text"] = nextString;
+            currentObj.style = nextSymbol;
+            currentObj.text = nextString;
 
             // save step
             currentSlideDict[i] = currentObj;

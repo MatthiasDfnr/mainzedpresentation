@@ -15,11 +15,11 @@ QUnit.test("getNextSymbol test", function(assert)  {
     var testString = "## This is the title [note] This is the body of the slide!";
     var result = this.reader.getNextSymbol(testString);
 
-    assert.equal(result, "title");
+    assert.equal(result, "header2");
 
     testString = "## This is the title";
     result = this.reader.getNextSymbol(testString);
-    assert.equal(result, "title");
+    assert.equal(result, "header2");
 
     testString = "[note] This is the title";
     result = this.reader.getNextSymbol(testString);
@@ -40,12 +40,12 @@ QUnit.test("getNextSymbol test", function(assert)  {
     // doube titles
     testString = "## This is the title ## whatever";
     result = this.reader.getNextSymbol(testString);
-    assert.equal(result, "title");
+    assert.equal(result, "header2");
 
     // added whitespace
     testString = " ## This is the title ## whatever ";
     result = this.reader.getNextSymbol(testString);
-    assert.equal(result, "title");
+    assert.equal(result, "header2");
 
     // added whitespace
     testString = "[image] bild.jpg ## whatever ";
@@ -88,7 +88,7 @@ QUnit.test("getNextString test", function(assert)  {
 QUnit.test("getRestString test", function(assert)  {
     var testString = "## This is the title [note] This is the body of the slide!";
     var nextSymbol = this.reader.getNextSymbol(testString);
-    assert.equal(nextSymbol, "title");  // ## +
+    assert.equal(nextSymbol, "header2");  // ## +
     var nextString = this.reader.getNextString(testString, nextSymbol);
     assert.equal(nextString, "This is the title");
     var restString = this.reader.getRestString(testString, nextSymbol, nextString);
@@ -148,7 +148,7 @@ QUnit.test("readSlideMarkdown test", function(assert)  {
     var testString = "## This is the title [note] This is the body of the slide! [note] another body text [image] bild.jpg";
     var expected = {
         0: {
-            style: "title",
+            style: "header2",
             text: "This is the title"
         },
         1: {
@@ -170,11 +170,11 @@ QUnit.test("readSlideMarkdown test", function(assert)  {
 });
 
 QUnit.test("read test", function(assert)  {
-    var testString = "## This is the title --- [note] This is the body of the slide!";
+    var testString = "# This is the title --- [note] This is the body of the slide!";
     var expected = {
         "1": {
             0: {
-                style: "title",
+                style: "header1",
                 text: "This is the title"
             }
         } ,
@@ -188,11 +188,11 @@ QUnit.test("read test", function(assert)  {
     var result = this.reader.read(testString);
     assert.equal(JSON.stringify(result), JSON.stringify(expected));
 
-    testString = "## This is the title [big] more text --- [note] This is the body of the slide! ## ueberschrift --- [note] more";
+    testString = "# This is the title [big] more text --- [note] This is the body of the slide! ## ueberschrift --- [note] more";
     expected = {
         "1": {
             0: {
-                style: "title",
+                style: "header1",
                 text: "This is the title"
             },
             1: {
@@ -206,7 +206,7 @@ QUnit.test("read test", function(assert)  {
                 text: "This is the body of the slide!"
             },
             1: {
-                style: "title",
+                style: "header2",
                 text: "ueberschrift"
             }
         },
@@ -232,7 +232,7 @@ QUnit.test("multiline for single slide", function(assert)  {
     var expected = {
         "1": {
             0: {
-                style: "title",
+                style: "header2",
                 text: "title on the very first slide"
             },
             1: {
@@ -249,7 +249,7 @@ QUnit.test("multiline for single slide", function(assert)  {
 QUnit.test("multiline for multiple slides", function(assert)  {
 
     var multiLineString = [
-        "## title on the very first slide",
+        "# title on the very first slide",
         "",
         "[note] normal text on the first slide",
         "",
@@ -263,7 +263,7 @@ QUnit.test("multiline for multiple slides", function(assert)  {
     var expected = {
         "1": {
             0: {
-                style: "title",
+                style: "header1",
                 text: "title on the very first slide"
             },
             1: {
@@ -273,7 +273,7 @@ QUnit.test("multiline for multiple slides", function(assert)  {
         },
         "2": {
             0: {
-                style: "title",
+                style: "header2",
                 text: "title on the second slide"
             },
             1: {
@@ -334,7 +334,7 @@ QUnit.test("complex markdown for multiple slides", function(assert)  {
         },
         "2": {
             0: {
-                style: "title",
+                style: "header2",
                 text: "title on 2nd slide!",
             },
             1: {
@@ -356,7 +356,7 @@ QUnit.test("complex markdown for multiple slides", function(assert)  {
         },
         "3": {
             0: {
-                style: "title",
+                style: "header2",
                 text: "title on 3nd slide!",
             },
             1: {
@@ -364,13 +364,13 @@ QUnit.test("complex markdown for multiple slides", function(assert)  {
                 text: "only paragraph on 2nd slide"
             },
             2: {
-                style: "title",
+                style: "header2",
                 text: "another title on 3nd slide!"
             }
         },
         "4": {
             0: {
-                style: "title",
+                style: "header2",
                 text: "title on 4th slide!",
             },
             1: {
@@ -455,7 +455,7 @@ QUnit.test("write title", function(assert)  {
     var markdownObject = {
         "1": {
             0: {
-                style: "title",
+                style: "header1",
                 text: "title on the very first slide"
             }
         }
@@ -473,7 +473,7 @@ QUnit.test("write normaltext", function(assert)  {
     var markdownObject = {
         "1": {
             0: {
-                style: "title",
+                style: "header1",
                 text: "title on the very first slide"
             },
             1: {
@@ -496,7 +496,7 @@ QUnit.test("write bigtext", function(assert)  {
     var markdownObject = {
         "1": {
             0: {
-                style: "title",
+                style: "header3",
                 text: "title on the very first slide"
             },
             1: {
@@ -514,7 +514,7 @@ QUnit.test("write bigtext", function(assert)  {
         }
     };
     var expected = "<div class='slide' id='slide1'>\n" +
-                 "<h1>title on the very first slide</h1>\n" +
+                 "<h3>title on the very first slide</h3>\n" +
                  "<p>the body of the first slide</p>\n" +
                  "<p class='bigtext'>some big text</p>\n" +
                  "<p>the 2nd body</p>\n" +
@@ -529,7 +529,7 @@ QUnit.test("write image", function(assert)  {
     var markdownObject = {
         "1": {
             0: {
-                style: "title",
+                style: "header1",
                 text: "title on the very first slide"
             },
             1: {
@@ -562,7 +562,7 @@ QUnit.test("write multiple slides", function(assert)  {
     var markdownObject = {
         "1": {
             0: {
-                style: "title",
+                style: "header1",
                 text: "title on the very first slide"
             },
             1: {
@@ -619,7 +619,7 @@ QUnit.test("write table of content", function(assert)  {
     var markdownObject = {
         "1": {
             0: {
-                style: "title",
+                style: "header1",
                 text: "title on the very first slide"
             },
             1: {
@@ -629,7 +629,7 @@ QUnit.test("write table of content", function(assert)  {
         },
         "2": {
             0: {
-                style: "title",
+                style: "header1",
                 text: "first title on 2nd slide"
             },
             1: {
@@ -637,7 +637,7 @@ QUnit.test("write table of content", function(assert)  {
                 text: "Koala1.jpg"
             },
             2: {
-                style: "title",
+                style: "header2",
                 text: "second title on 2nd slide"
             },
             3: {
@@ -647,13 +647,13 @@ QUnit.test("write table of content", function(assert)  {
         },
         "3": {
             0: {
-                style: "title",
+                style: "header1",
                 text: "title on the third slide"
             }
         },
         "4": {
             0: {
-                style: "title",
+                style: "header1",
                 text: "title on the last slide"
             }
         }
@@ -726,7 +726,7 @@ QUnit.test("test DOM elements", function(assert)  {
     // slide 3
     expect = '\n<h1>title on 3nd slide!</h1>\n' +
                 '<p>only paragraph on 2nd slide</p>\n' +
-                '<h1>another title on 3nd slide!</h1>\n';
+                '<h2>subtitle on 3nd slide!</h2>\n';
     result = $("#slide3").html();
     assert.equal(result, expect, "#slide3 correct");
 

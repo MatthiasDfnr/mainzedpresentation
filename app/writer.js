@@ -26,8 +26,14 @@ function Writer() {
 
             for (var k in slide) {
                 var element = slide[k];
-                if (element.style === "title") {
-                    html += this.writeTitle(element) + "\n";
+                if (element.style === "header1") {
+                    html += this.writeHeader1(element) + "\n";
+
+                } else if (element.style === "header2") {
+                    html += this.writeHeader2(element) + "\n";
+
+                } else if (element.style === "header3") {
+                    html += this.writeHeader3(element) + "\n";
 
                 } else if (element.style === "normaltext") {
                     html += this.writeNormalText(element) + "\n";
@@ -60,8 +66,16 @@ function Writer() {
         return "<img src='" + element.text + "' />";
     };
 
-    Writer.prototype.writeTitle = function(element) {
+    Writer.prototype.writeHeader1 = function(element) {
         return "<h1>" + element.text + "</h1>";
+    };
+
+    Writer.prototype.writeHeader2 = function(element) {
+        return "<h2>" + element.text + "</h2>";
+    };
+
+    Writer.prototype.writeHeader3 = function(element) {
+        return "<h3>" + element.text + "</h3>";
     };
 
     /**
@@ -82,7 +96,7 @@ function Writer() {
 
             for (var k in slide) {
                 var element = slide[k];
-                if (element.style === "title") {  // only titles
+                if (element.style === "header1" || element.style === "header2" || element.style === "header3") {  // only titles
                     html += "<li><a href='#slide" + slideCounter + "'>" + element.text + " " + slideCounter + "</a></li>\n";
                 }
             }
