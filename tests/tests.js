@@ -415,7 +415,7 @@ QUnit.test("$.ajax done", function(assert)  {
     });
     assert.equal(result, "done!", "done correct");
 
-    // test fail
+    // not found
     result = undefined;
     $.ajax({
         url: "files/notAValidFilePath.txt",
@@ -705,7 +705,7 @@ QUnit.module("DOM", {
     }
 });
 
-QUnit.test("test single divs", function(assert)  {
+QUnit.test("test DOM elements", function(assert)  {
     var expect;
     var result;
 
