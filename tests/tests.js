@@ -398,24 +398,24 @@ QUnit.test("complex markdown for multiple slides", function(assert)  {
     assert.equal(JSON.stringify(result), JSON.stringify(expected));
 });
 
-QUnit.test("get file using $.ajax", function(assert)  {
+QUnit.test("$.ajax done", function(assert)  {
     var result;
+    var isFirefox = typeof InstallTrigger !== "undefined";
+    var isChrome = !!window.chrome && !!window.chrome.webstore;
+    var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
 
     // success
     result = undefined;
     $.ajax({
         url: "files/markdown.txt",
         dataType: "text",
-        async: false,
-        success: function(data) {
-            if (data.length > 0) {
-                result = "success!";
-            }
-        }
+        async: false
+    }).done(function() {
+        result = "done!";
     });
-    assert.equal(result, "success!", "ajax query success");
+    assert.equal(result, "done!", "done correct");
 
-    // fail
+    // test fail
     result = undefined;
     $.ajax({
         url: "files/notAValidFilePath.txt",
@@ -423,11 +423,22 @@ QUnit.test("get file using $.ajax", function(assert)  {
         async: false,
         success: function(data) {
             if (data.length < 1) {
-                result = "fail!";
+                result = "success, but no data";
+            } else {
+                result = "success with data";
             }
+
+        },
+        error: function() {
+            result = "error";
         }
     });
-    assert.equal(result, "fail!", "ajax query success");
+    if (isFirefox) {
+        assert.equal(result, "error", "firefox error correct");
+    } else {
+        assert.equal(result, "success, but no data", "error correct");
+    };
+
 });
 
 QUnit.module("Writer", {
@@ -658,4 +669,72 @@ QUnit.test("write table of content", function(assert)  {
                    "</div>\n\n";
     var result = this.writer.writeTableOfContent(markdownObject);
     assert.equal(result, expected, "returned content html");
+});
+
+QUnit.module("DOM", {
+    beforeEach: function() {
+
+        this.reader = new Reader();
+
+        // get markdown
+        var markdown;
+        $.ajax({
+            url: "files/markdown.txt",
+            dataType: "text",
+            async: false,
+            success: function(data) {
+                markdown = data;
+            }
+        });
+
+        // convert to markdownObject
+        var markdownObject = this.reader.read(markdown);
+
+        // write html
+        this.writer = new Writer();
+        var generatedHtml = this.writer.write(markdownObject);
+
+        // append generated html to specific div that is not visible
+        $("body").append("<div id='domtest'></div>");
+        $("#domtest").hide();
+        $("#domtest").append(generatedHtml);
+
+    },
+    afterEach: function() {
+        $("#domtest").remove();
+    }
+});
+
+QUnit.test("test single divs", function(assert)  {
+    var expect;
+    var result;
+
+    // slide 1
+    expect = '\n<p class="bigtext">digitalität und diversität</p>\n';
+    result = $("#slide1").html();
+    assert.equal(result, expect, "#slide1 correct");
+
+    // slide 2
+    expect = '\n<h1>title on 2nd slide!</h1>\n' +
+                '<p>first paragraph on 2nd slide</p>\n' +
+                '<p>second paragraph on 2nd slide</p>\n' +
+                '<p>third paragraph on 2nd slide</p>\n' +
+                '<p>last paragraph on 2nd slide</p>\n';
+    result = $("#slide2").html();
+    assert.equal(result, expect, "#slide2 correct");
+
+    // slide 3
+    expect = '\n<h1>title on 3nd slide!</h1>\n' +
+                '<p>only paragraph on 2nd slide</p>\n' +
+                '<h1>another title on 3nd slide!</h1>\n';
+    result = $("#slide3").html();
+    assert.equal(result, expect, "#slide3 correct");
+
+    // slide 4
+    expect = '\n<h1>title on 4th slide!</h1>\n' +
+                '<p>some text above the image</p>\n' +
+                '<img src="Koala.jpg">\n' +
+                '<p>some text below the image</p>\n';
+    result = $("#slide4").html();
+    assert.equal(result, expect, "#slide4 correct");
 });

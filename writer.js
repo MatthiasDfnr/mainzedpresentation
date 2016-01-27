@@ -27,23 +27,41 @@ function Writer() {
             for (var k in slide) {
                 var element = slide[k];
                 if (element.style === "title") {
-                    html += "<h1>" + element.text + "</h1>\n";
+                    html += this.writeTitle(element) + "\n";
+
+                } else if (element.style === "normaltext") {
+                    html += this.writeNormalText(element) + "\n";
 
                 } else if (element.style === "bigtext") {
-                    html += "<p class='bigtext'>" + element.text + "</p>\n";
+                    html += this.writeBigText(element) + "\n";
 
                 } else if (element.style === "image") {
-                    html += "<img src='" + element.text + "' />\n";
+                    html += this.writeImage(element) + "\n";
 
                 } else {
-                    html += "<p>" + element.text + "</p>\n";
+                    html += this.writeNormalText(element) + "\n";
                 }
             }
             html += "</div>\n\n";
             slideCounter++;
         }
-
         return html;
+    };
+
+    Writer.prototype.writeNormalText = function(element) {
+        return "<p>" + element.text + "</p>";
+    };
+
+    Writer.prototype.writeBigText = function(element) {
+        return "<p class='bigtext'>" + element.text + "</p>";
+    };
+
+    Writer.prototype.writeImage = function(element) {
+        return "<img src='" + element.text + "' />";
+    };
+
+    Writer.prototype.writeTitle = function(element) {
+        return "<h1>" + element.text + "</h1>";
     };
 
     /**
@@ -76,5 +94,4 @@ function Writer() {
 
         return html;
     };
-
 }
