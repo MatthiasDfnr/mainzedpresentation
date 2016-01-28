@@ -27,18 +27,42 @@
     	body {margin: 0 50px;}
 
     	.slide {
-    		min-height: calc(100% - 50px); padding-top: 50px;
+    		min-height: calc(100% - 90px); 
+    		padding-top: 90px;
     	}
-		* {font-family: "Arimo"; margin: 0; padding: 0; letter-spacing: 0.05em; font-size: 50px;}
-		.slide { }
-		.bigtext {font-family: "Arimo"; font-weight: bold; font-size: 220px; line-height: 240px; letter-spacing: -5px;}
-		#footer { border-top: 3px solid black; width: calc(100% - 100px); position: fixed; bottom: 0;}
+
+		* {			font-family: "Arimo"; 
+					margin: 0; padding: 0; 
+					letter-spacing: 0.03em; 
+					font-size: 70px;
+		}
+		
+		.bigtext {	font-family: "Arimo"; 
+					font-weight: bold; 
+					font-size: 150px; 
+					line-height: 190px; 
+					letter-spacing: -5px;
+					text-align: center;
+					margin-top: 10%;
+				}
+		#footer { border-bottom: 3px solid black; width: calc(100% - 100px); position: fixed; top: 0;}
 		#footer span {margin-top: -12px; font-family: "mainzed display type"; display: block; font-size: 50px; }
+		li {margin-left: 65px;}
+		h1 {
+			margin-bottom: 100px; 
+			font-weight: normal;
+			font-size: 100px;
+		}
+
+		.slide img {text-align: center; width: 1000px; left: 50%; position: relative; 
+			margin-left: -500px;}
+		figcaption { text-align: center; font-size: 50px;}
+		img.icon {width: 30px;}
 	</style>
 </head>
 
 <body>
 
-	<div id="footer"><span>m</span></div>
+	<div id="footer"><span><img class="icon" src="mainzedicon.svg" width="30" /></span></div>
 </body>
 </html>

@@ -2,36 +2,37 @@
 
 ---
 
-# title on 2nd slide!
-
+# Seitentitel (falls benötigt)
 first paragraph on 2nd slide
-
+second paragraph on 2nd slide
 second paragraph on 2nd slide
 
-* first list element
-* second list element
-* third list element
-
-last paragraph on 2nd slide
 
 ---
 
 # title on 3nd slide!
 
-## subtitle on 3nd slide!
-
-* single list element
-
-only paragraph on 2nd slide
+* first list element
+* second list element
+* third list element
 
 ---
 
-# title on 4th slide!
-
-some text above the image
-[image] (Koala.jpg, "Caption this!", "http://www.koalas.com")
-some text below the image
+# Das ist eine große Frage?
 
 ---
 
-[big] big text on the last slide
+[big] Das ist eine größere Frage?
+
+---
+
+Seiten benötigen nicht unbedingt Titel
+
+---
+
+
+
+
+[image] (Koala.jpg, This is "DEMO-KOALA" , "http://www.koalas.com")
+
+
