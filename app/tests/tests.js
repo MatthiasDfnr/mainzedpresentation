@@ -109,7 +109,7 @@ QUnit.test("getNextElement test", function(assert)  {
     nextSymbol = this.reader.getNextSymbol(testString);
     element = this.reader.getNextElement(testString, nextSymbol);
     assert.equal(element.style, "image");
-    assert.equal(element.text, "koala.jpg");
+    assert.equal(element.url, "koala.jpg");
     assert.equal(element.reference, "https://reference.com");
 
     /*
@@ -206,12 +206,20 @@ QUnit.test("readSlideMarkdown test", function(assert)  {
         },
         3: {
             style: "image",
-            text: "bild.jpg",
+            url: "bild.jpg",
             caption: "caption",
             reference: "reference"
         }
     };
     var result = this.reader.readSlideMarkdown(testString);
+
+    assert.equal(JSON.stringify(result), JSON.stringify(expected), "returned correct object!");
+});
+
+QUnit.test("detectNormaltext test", function(assert)  {
+    var testString = "## This is the title \nThis is the body of the slide! \n[note] another body text \n[image] (bild.jpg, caption, reference)";
+    var expected = "## This is the title \n[note] This is the body of the slide! \n[note] another body text \n[image] (bild.jpg, caption, reference)";
+    var result = this.reader.detectNormaltext(testString, "\n");
 
     assert.equal(JSON.stringify(result), JSON.stringify(expected), "returned correct object!");
 });
@@ -411,9 +419,9 @@ QUnit.test("complex markdown for multiple slides", function(assert)  {
         "",
         "## title on 2nd slide!",
         "",
-        "[note] first paragraph on 2nd slide",
+        "first paragraph on 2nd slide",
         "",
-        "[note] second paragraph on 2nd slide",
+        "second paragraph on 2nd slide",
         "",
         "[image] (Koala.gif, caption, reference)",
         "",
@@ -423,7 +431,7 @@ QUnit.test("complex markdown for multiple slides", function(assert)  {
         "",
         "## title on 3nd slide!",
         "",
-        "[note] only paragraph on 2nd slide",
+        "only paragraph on 2nd slide",
         "",
         "## another title on 3nd slide!",
         "",
@@ -433,7 +441,7 @@ QUnit.test("complex markdown for multiple slides", function(assert)  {
         "",
         "[note] some text above the image",
         "[image] (Koala23.jpg, caption, reference)",
-        "[note] some text below the image",
+        "some text below the image",
         "",
         "---",
         "",
@@ -450,7 +458,7 @@ QUnit.test("complex markdown for multiple slides", function(assert)  {
         "2": {
             0: {
                 style: "header2",
-                text: "title on 2nd slide!",
+                text: "title on 2nd slide!"
             },
             1: {
                 style: "normaltext",
@@ -462,7 +470,7 @@ QUnit.test("complex markdown for multiple slides", function(assert)  {
             },
             3: {
                 style: "image",
-                text: "Koala.gif",
+                url: "Koala.gif",
                 caption: "caption",
                 reference: "reference"
             },
@@ -474,7 +482,7 @@ QUnit.test("complex markdown for multiple slides", function(assert)  {
         "3": {
             0: {
                 style: "header2",
-                text: "title on 3nd slide!",
+                text: "title on 3nd slide!"
             },
             1: {
                 style: "normaltext",
@@ -496,7 +504,7 @@ QUnit.test("complex markdown for multiple slides", function(assert)  {
             },
             2: {
                 style: "image",
-                text: "Koala23.jpg",
+                url: "Koala23.jpg",
                 caption: "caption",
                 reference: "reference"
             },
@@ -661,7 +669,7 @@ QUnit.test("write image", function(assert)  {
             },
             2: {
                 style: "image",
-                text: "Koala.jpg",
+                url: "Koala.jpg",
                 caption: "",
                 reference: "some reference"
             },
@@ -693,7 +701,7 @@ QUnit.test("write image", function(assert)  {
             },
             2: {
                 style: "image",
-                text: "Koala.jpg",
+                url: "Koala.jpg",
                 caption: "Caption this!",
                 reference: "some reference"
             },
@@ -819,7 +827,7 @@ QUnit.test("write multiple slides", function(assert)  {
             },
             2: {
                 style: "image",
-                text: "Koala.jpg",
+                url: "Koala.jpg",
                 caption: "",
                 reference: ""
             },
@@ -835,13 +843,13 @@ QUnit.test("write multiple slides", function(assert)  {
             },
             1: {
                 style: "image",
-                text: "Koala1.jpg",
+                url: "Koala1.jpg",
                 caption: "",
                 reference: ""
             },
             2: {
                 style: "image",
-                text: "Koala2.jpg",
+                url: "Koala2.jpg",
                 caption: "",
                 reference: ""
             },
@@ -888,7 +896,9 @@ QUnit.test("write table of content", function(assert)  {
             },
             1: {
                 style: "image",
-                text: "Koala1.jpg"
+                url: "Koala1.jpg",
+                caption: "",
+                reference: ""
             },
             2: {
                 style: "header2",

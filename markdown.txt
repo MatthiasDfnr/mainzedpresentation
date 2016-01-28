@@ -4,15 +4,15 @@
 
 # title on 2nd slide!
 
-[note] first paragraph on 2nd slide
+first paragraph on 2nd slide
 
-[note] second paragraph on 2nd slide
+second paragraph on 2nd slide
 
 * first list element
 * second list element
 * third list element
 
-[note] last paragraph on 2nd slide
+last paragraph on 2nd slide
 
 ---
 
@@ -20,15 +20,17 @@
 
 ## subtitle on 3nd slide!
 
-[note] only paragraph on 2nd slide
+* single list element
+
+only paragraph on 2nd slide
 
 ---
 
 # title on 4th slide!
 
-[note] some text above the image
+some text above the image
 [image] (Koala.jpg, "Caption this!", "http://www.koalas.com")
-[note] some text below the image
+some text below the image
 
 ---
 

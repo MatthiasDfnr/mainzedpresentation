@@ -8,7 +8,8 @@ var onSuccess = function(data) {
     var newWriter = new Writer();
 
     $("body").append(newWriter.write(markdownObject));
-    //$('body').append(newWriter.writeTableOfContent(markdownObject));
+    $('body').append(newWriter.writeTableOfContent(markdownObject));
+    $('body').append(newWriter.writeTableOfImages(markdownObject));
 };
 
 $(document).ready(function() {

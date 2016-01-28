@@ -43,7 +43,7 @@ function Reader() {
         // determine lowest
         //console.log(resultDict);
         var values = [];
-        for(var k in resultDict) values.push(k);
+        for (var k in resultDict) values.push(k);
         var lowestIndex = Array.min(values);
         var nextSymbol = resultDict[lowestIndex];
 
@@ -149,7 +149,6 @@ function Reader() {
         element.style = nextSymbol;
         element.text = result;
 
-
         // intercept images because they are still in this format
         // (url, caption, reference)
         // only use url for now
@@ -168,9 +167,10 @@ function Reader() {
             var caption = result.split(",")[1].trim();
             var reference = result.split(",")[2].trim();
 
-            element.text = url;
+            element.url = url;
             element.caption = caption;
             element.reference = reference;
+            element.text = undefined;
             //console.log(result);
         }
 
@@ -252,7 +252,6 @@ function Reader() {
             newString = undefined;
         }
 
-
         if (newString === undefined || newString === "") {
             return undefined;
         } else {
@@ -311,6 +310,46 @@ function Reader() {
         return currentSlideDict;
     };
 
+    /**
+     * Detects paragraphs without markdown symbols and addes the
+     * symbol for normaltext [note] to them. returns the string
+     * for provided slide.
+     */
+    Reader.prototype.detectNormaltext = function(slideString, linebreak) {
+
+        var blankPositions = [];  // store paragraph indexes to be replaced with [note]
+
+        var chunks = slideString.split(linebreak);
+
+        chunks.forEach(function(chunk, i) {
+            if (chunk.length > 0) {  // skip empty paragraphs
+                //console.log(chunk);
+                // check for known symbols
+                // if not, make normaltext
+                var foundSymbol = false;
+                for (var key in symbols) {
+                    if (chunk.indexOf(symbols[key]) !== -1) {  // symbol not in paragraph
+                        foundSymbol = true;
+                    }
+                }
+                if (!foundSymbol) {
+                    blankPositions.push(i);
+                }
+            }
+        });
+
+        //console.log("replace the following with [note]: " + blankPositions);
+        var paragraphs = slideString.split(linebreak);
+        blankPositions.forEach(function(position) {
+            paragraphs[position] = "[note] " + paragraphs[position];
+        });
+
+        // sow them back together :)
+        slideString = paragraphs.join(linebreak);
+
+        return slideString;
+    };
+
     Reader.prototype.read = function(markdownString) {
         var me = this;
         var resultDict = {};
@@ -331,6 +370,14 @@ function Reader() {
             // assign the current slide string
             slideString = slideString.trim();
             //console.log("before: " + slideString);
+
+            // should always work with \n, since it only adds stuff
+            // \r\n should keep intact
+            slideString = me.detectNormaltext(slideString, "\n");
+
+            while (slideString.indexOf("\r\n") > -1) {
+                slideString = slideString.replace(/\r/, "");
+            }
 
             // all line breaks get removed earlier
             // remove all line breaks -> cannot use readSlideMarkdown without
