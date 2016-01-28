@@ -14,18 +14,22 @@
 
 ---
 
-# title on 3nd slide!
+# title on 3rd slide!
 
-[note] only paragraph on 2nd slide
+[note] paragraph on 3rd slide
 
-## subtitle on 3nd slide!
+* first list element
+* second list element
+* third list element
+
+## subtitle on 3rd slide!
 
 ---
 
 # title on 4th slide!
 
 [note] some text above the image
-[image] Koala.jpg
+[image] (Koala.jpg, caption this!, https://reference.com)
 [note] some text below the image
 
 ---

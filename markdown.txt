@@ -8,7 +8,9 @@
 
 [note] second paragraph on 2nd slide
 
-[note] third paragraph on 2nd slide
+* first list element
+* second list element
+* third list element
 
 [note] last paragraph on 2nd slide
 

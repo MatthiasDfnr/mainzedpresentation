@@ -46,6 +46,18 @@ function Writer() {
                 } else if (element.style === "image") {
                     html += this.writeImage(element) + this.LINEBREAK;
 
+                } else if (element.style === "listelement") {
+                    html += this.writeListElement(element) + this.LINEBREAK;
+
+                } else if (element.style === "singlelistelement") {
+                    html += this.writeSingleListElement(element) + this.LINEBREAK;
+
+                } else if (element.style === "startlistelement") {
+                    html += this.writeStartListElement(element);
+
+                } else if (element.style === "endlistelement") {
+                    html += this.writeEndListElement(element) + this.LINEBREAK;
+
                 } else {
                     html += this.writeNormalText(element) + this.LINEBREAK;
                 }
@@ -60,12 +72,48 @@ function Writer() {
         return "<p>" + element.text + "</p>";
     };
 
+    Writer.prototype.writeListElement = function(element) {
+        return "<li>" + element.text + "</li>";
+    };
+
+    Writer.prototype.writeSingleListElement = function(element) {
+        var html = "";
+        html += "<ul>" + this.LINEBREAK;
+        html += "<li>" + element.text + "</li>" + this.LINEBREAK;
+        html += "</ul>";
+        return html;
+    };
+
+    Writer.prototype.writeStartListElement = function(element) {
+        var html = "";
+        html += "<ul>" + this.LINEBREAK;
+        html += "<li>" + element.text + "</li>" + this.LINEBREAK;
+        return html;
+    };
+
+    Writer.prototype.writeEndListElement = function(element) {
+        var html = "";
+        html += "<li>" + element.text + "</li>" + this.LINEBREAK;
+        html += "</ul>";
+        return html;
+    };
+
     Writer.prototype.writeBigText = function(element) {
         return "<p class='bigtext'>" + element.text + "</p>";
     };
 
     Writer.prototype.writeImage = function(element) {
-        return "<img src='" + element.text + "' />";
+        var html = "";
+
+        if (element.caption.length > 0) {
+            html += "<figure>" + this.LINEBREAK;
+            html += "<img src='" + element.text + "' />" + this.LINEBREAK;
+            html += "<figcaption>" + element.caption + "</figcaption>" + this.LINEBREAK;
+            html += "</figure>";
+        } else {
+            html += "<img src='" + element.text + "' />";
+        }
+        return html;
     };
 
     Writer.prototype.writeHeader1 = function(element) {

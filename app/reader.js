@@ -9,10 +9,14 @@ function Reader() {
         header3: "###",
         newslide: "---",
         normaltext: "[note]",
-        italics: "*",
+        listelement: "*",
         bigtext: "[big]",
         image: "[image]"
     };
+
+    // holds the element of the last step,
+    // e.g. to use when determeming start and end of lists
+    this.currentElement = {};
 
     // private
     Array.min = function( array ){
@@ -97,7 +101,7 @@ function Reader() {
      * Determines the string that corresponds to the current symbol.
      * returns an object with all specifications
      */
-    Reader.prototype.getNextElement = function(string, nextSymbol) {
+    Reader.prototype.getNextElement = function(currentString, nextSymbol) {
 
         var element = {};  // object to return
 
@@ -105,7 +109,7 @@ function Reader() {
         var nextMarkdown = symbols[nextSymbol];
 
         // split  // TODO: check if title follows another title
-        var splitStrings = string.split(nextMarkdown);
+        var splitStrings = currentString.split(nextMarkdown);
 
         // remove empty strings
         // TODO: clean up more so the first element is the correct one!
@@ -160,12 +164,64 @@ function Reader() {
                 result = result.replace(")", "");
             }
 
-            // select url, discard rest for now
-            result = result.split(",")[0];
-            element.text = result;
+            var url = result.split(",")[0].trim();
+            var caption = result.split(",")[1].trim();
+            var reference = result.split(",")[2].trim();
+
+            element.text = url;
+            element.caption = caption;
+            element.reference = reference;
             //console.log(result);
         }
 
+        if (nextSymbol === "listelement") {
+            //console.log("list element!");
+            // check if previous was list
+            var previousSymbol = this.currentElement.style;
+            //console.log("previous: " + previousSymbol);
+            // check if next is list
+
+            //console.log("currentString: " + currentString);
+            //console.log("nextSymbol: " + nextSymbol);
+            //console.log("result: " + element.text);
+
+            var remainingString = this.getRestString(currentString, nextSymbol, result);
+
+            // check if this was the last element on the slide
+            var symbolAfterThis;
+            if (remainingString === undefined) {
+                symbolAfterThis = false;
+            } else {
+                symbolAfterThis = this.getNextSymbol(remainingString);
+            }
+
+            //console.log("next: " + symbolAfterThis);
+            // if no: make it style: "startlistelement"
+            if (previousSymbol !== "listelement" && previousSymbol !== "startlistelement") {  // no list before
+                // the previous element was not a list element
+                // so this could be the starting element of a
+                // list or a standalone listelement
+                //console.log("previous not a list!");
+                if (symbolAfterThis === "listelement") {
+                    //console.log("after is list!");
+                    element.style = "startlistelement";
+                } else {
+                    //console.log("after is not a list!");
+                    element.style = "singlelistelement";
+                }
+
+            } else {
+                if (symbolAfterThis !== "listelement") {
+                    // next element is not a list
+                    // so make this element the end of the list
+                    element.style = "endlistelement";
+                } else {
+                    // next element is also a list element
+                    // so make this one a normal listelement
+                    element.style = "listelement";
+                }
+            }
+        }
         return element;
     };
 
@@ -237,6 +293,7 @@ function Reader() {
 
             // save step
             currentSlideDict[i] = element;
+            this.currentElement = element;  // save for other functions
 
             // now remove the last string from the long one and repeat process
             var nextString = this.getNextString(currentString, nextSymbol);

@@ -33,9 +33,9 @@ QUnit.test("getNextSymbol test", function(assert)  {
     result = this.reader.getNextSymbol(testString);
     assert.equal(result, "bigtext");
 
-    testString = "*This is in italics* ## whatever";
+    testString = "*This is a list element* ## whatever";
     result = this.reader.getNextSymbol(testString);
-    assert.equal(result, "italics");
+    assert.equal(result, "listelement");
 
     // doube titles
     testString = "## This is the title ## whatever";
@@ -83,6 +83,51 @@ QUnit.test("getNextString test", function(assert)  {
     nextSymbol = this.reader.getNextSymbol(testString);
     result = this.reader.getNextString(testString, nextSymbol);
     assert.equal(result, "(bild.jpg, 'caption', 'reference')");
+});
+
+QUnit.test("getNextElement test", function(assert)  {
+    var testString;
+    var nextSymbol;
+    var element;
+
+    // header 2 element
+    testString = "## This is the title [note] This is the body of the slide!";
+    nextSymbol = this.reader.getNextSymbol(testString);
+    element = this.reader.getNextElement(testString, nextSymbol);
+    assert.equal(element.style, "header2");
+    assert.equal(element.text, "This is the title");
+
+    // normaltext element
+    testString = "[note] This is the body! ## This is the title ";
+    nextSymbol = this.reader.getNextSymbol(testString);
+    element = this.reader.getNextElement(testString, nextSymbol);
+    assert.equal(element.style, "normaltext");
+    assert.equal(element.text, "This is the body!");
+
+    // normaltext element
+    testString = "[image] (koala.jpg, this is a caption, https://reference.com) ## This is the title ";
+    nextSymbol = this.reader.getNextSymbol(testString);
+    element = this.reader.getNextElement(testString, nextSymbol);
+    assert.equal(element.style, "image");
+    assert.equal(element.text, "koala.jpg");
+    assert.equal(element.reference, "https://reference.com");
+
+    /*
+    testString = "[note] This is the body! ## This is the title ";
+    nextSymbol = this.reader.getNextSymbol(testString);
+    result = this.reader.getNextString(testString, nextSymbol);
+    assert.equal(result, "This is the body!");
+
+    testString = "[big] This is the big body! ## This is the title ";
+    nextSymbol = this.reader.getNextSymbol(testString);
+    result = this.reader.getNextString(testString, nextSymbol);
+    assert.equal(result, "This is the big body!");
+
+    testString = "[image] (bild.jpg, 'caption', 'reference') ## This is the title ";
+    nextSymbol = this.reader.getNextSymbol(testString);
+    result = this.reader.getNextString(testString, nextSymbol);
+    assert.equal(result, "(bild.jpg, 'caption', 'reference')");
+    */
 });
 
 QUnit.test("getRestString test", function(assert)  {
@@ -145,7 +190,7 @@ QUnit.test("getRestString following strings test", function(assert)  {
 });
 
 QUnit.test("readSlideMarkdown test", function(assert)  {
-    var testString = "## This is the title [note] This is the body of the slide! [note] another body text [image] (bild.jpg, 'caption', 'reference')";
+    var testString = "## This is the title [note] This is the body of the slide! [note] another body text [image] (bild.jpg, caption, reference)";
     var expected = {
         0: {
             style: "header2",
@@ -161,7 +206,9 @@ QUnit.test("readSlideMarkdown test", function(assert)  {
         },
         3: {
             style: "image",
-            text: "bild.jpg"
+            text: "bild.jpg",
+            caption: "caption",
+            reference: "reference"
         }
     };
     var result = this.reader.readSlideMarkdown(testString);
@@ -199,7 +246,7 @@ QUnit.test("read test", function(assert)  {
                 style: "bigtext",
                 text: "more text"
             }
-        } ,
+        },
         "2": {
             0: {
                 style: "normaltext",
@@ -219,6 +266,74 @@ QUnit.test("read test", function(assert)  {
     };
     result = this.reader.read(testString);
     assert.equal(JSON.stringify(result), JSON.stringify(expected));
+});
+
+QUnit.test("list tests", function(assert)  {
+    var testString;
+    var expected;
+    var result;
+
+    testString = "# This is the title --- * list element!";
+    expected = {
+        "1": {
+            0: {
+                style: "header1",
+                text: "This is the title"
+            }
+        },
+        "2": {
+            0: {
+                style: "singlelistelement",
+                text: "list element!"
+            }
+        }
+    };
+    result = this.reader.read(testString);
+    assert.equal(JSON.stringify(result), JSON.stringify(expected), "standalone list works!");
+
+    testString = "* first element * second element";
+    expected = {
+        "1": {
+            0: {
+                style: "startlistelement",
+                text: "first element"
+            },
+            1: {
+                style: "endlistelement",
+                text: "second element"
+            }
+        }
+    };
+    result = this.reader.read(testString);
+    assert.equal(JSON.stringify(result), JSON.stringify(expected), "start and end works!");
+
+    testString = "## subtitle * first element * second element * third element # title";
+    expected = {
+        "1": {
+            0: {
+                style: "header2",
+                text: "subtitle"
+            },
+            1: {
+                style: "startlistelement",
+                text: "first element"
+            },
+            2: {
+                style: "listelement",
+                text: "second element"
+            },
+            3: {
+                style: "endlistelement",
+                text: "third element"
+            },
+            4: {
+                style: "header1",
+                text: "title"
+            }
+        }
+    };
+    result = this.reader.read(testString);
+    assert.equal(JSON.stringify(result), JSON.stringify(expected), "normal listelement end works!");
 });
 
 QUnit.test("multiline for single slide", function(assert)  {
@@ -300,7 +415,7 @@ QUnit.test("complex markdown for multiple slides", function(assert)  {
         "",
         "[note] second paragraph on 2nd slide",
         "",
-        "[image] Koala23.gif",
+        "[image] (Koala.gif, caption, reference)",
         "",
         "[note] last paragraph on 2nd slide",
         "",
@@ -317,7 +432,7 @@ QUnit.test("complex markdown for multiple slides", function(assert)  {
         "## title on 4th slide!",
         "",
         "[note] some text above the image",
-        "[image] Koala.jpg",
+        "[image] (Koala23.jpg, caption, reference)",
         "[note] some text below the image",
         "",
         "---",
@@ -347,7 +462,9 @@ QUnit.test("complex markdown for multiple slides", function(assert)  {
             },
             3: {
                 style: "image",
-                text: "Koala23.gif"
+                text: "Koala.gif",
+                caption: "caption",
+                reference: "reference"
             },
             4: {
                 style: "normaltext",
@@ -371,7 +488,7 @@ QUnit.test("complex markdown for multiple slides", function(assert)  {
         "4": {
             0: {
                 style: "header2",
-                text: "title on 4th slide!",
+                text: "title on 4th slide!"
             },
             1: {
                 style: "normaltext",
@@ -379,7 +496,9 @@ QUnit.test("complex markdown for multiple slides", function(assert)  {
             },
             2: {
                 style: "image",
-                text: "Koala.jpg"
+                text: "Koala23.jpg",
+                caption: "caption",
+                reference: "reference"
             },
             3: {
                 style: "normaltext",
@@ -525,9 +644,12 @@ QUnit.test("write bigtext", function(assert)  {
 });
 
 QUnit.test("write image", function(assert)  {
+    var markdownObject;
+    var expected;
+    var result;
 
-    // title + normaltext + bigtext + normaltext
-    var markdownObject = {
+    // no caption
+    markdownObject = {
         "1": {
             0: {
                 style: "header1",
@@ -539,7 +661,9 @@ QUnit.test("write image", function(assert)  {
             },
             2: {
                 style: "image",
-                text: "Koala.jpg"
+                text: "Koala.jpg",
+                caption: "",
+                reference: "some reference"
             },
             3: {
                 style: "normaltext",
@@ -547,14 +671,137 @@ QUnit.test("write image", function(assert)  {
             }
         }
     };
-    var expected = "<div class='slide' id='slide1'>" + this.linebreak +
+    expected = "<div class='slide' id='slide1'>" + this.linebreak +
                  "<h1>title on the very first slide</h1>" + this.linebreak +
                  "<p>the body of the first slide</p>" + this.linebreak +
                  "<img src='Koala.jpg' />" + this.linebreak +
                  "<p>the 2nd body</p>" + this.linebreak +
                "</div>" + this.linebreak + this.linebreak;
-    var result = this.writer.write(markdownObject);
-    assert.equal(result, expected, "returned image html");
+    result = this.writer.write(markdownObject);
+    assert.equal(result, expected, "image without caption");
+
+    // with caption
+    markdownObject = {
+        "1": {
+            0: {
+                style: "header1",
+                text: "title on the very first slide"
+            },
+            1: {
+                style: "normaltext",
+                text: "the body of the first slide"
+            },
+            2: {
+                style: "image",
+                text: "Koala.jpg",
+                caption: "Caption this!",
+                reference: "some reference"
+            },
+            3: {
+                style: "normaltext",
+                text: "the 2nd body"
+            }
+        }
+    };
+    expected = "<div class='slide' id='slide1'>" + this.linebreak +
+                 "<h1>title on the very first slide</h1>" + this.linebreak +
+                 "<p>the body of the first slide</p>" + this.linebreak +
+                 "<figure>" + this.linebreak +
+                 "<img src='Koala.jpg' />" + this.linebreak +
+                 "<figcaption>Caption this!</figcaption>" + this.linebreak +
+                 "</figure>" + this.linebreak +
+                 "<p>the 2nd body</p>" + this.linebreak +
+               "</div>" + this.linebreak + this.linebreak;
+    result = this.writer.write(markdownObject);
+    assert.equal(result, expected, "image with caption");
+});
+
+QUnit.test("write lists", function(assert)  {
+
+    var markdownObject;
+    var expected;
+    var result;
+
+    // standalone lists
+    markdownObject = {
+        "1": {
+            0: {
+                style: "header1",
+                text: "title on the very first slide"
+            },
+            1: {
+                style: "singlelistelement",
+                text: "standalone list element"
+            },
+            2: {
+                style: "normaltext",
+                text: "some normal text"
+            }
+        }
+    };
+    expected = "<div class='slide' id='slide1'>" + this.linebreak +
+                 "<h1>title on the very first slide</h1>" + this.linebreak +
+                 "<ul>" + this.linebreak +
+                    "<li>standalone list element</li>" + this.linebreak +
+                 "</ul>" + this.linebreak +
+                 "<p>some normal text</p>" + this.linebreak +
+               "</div>" + this.linebreak + this.linebreak;
+    result = this.writer.write(markdownObject);
+    assert.equal(result, expected, "standalone lists work!");
+
+    // start and end list
+    markdownObject = {
+        "1": {
+            0: {
+                style: "startlistelement",
+                text: "start"
+            },
+            1: {
+                style: "endlistelement",
+                text: "end"
+            }
+        }
+    };
+    expected = "<div class='slide' id='slide1'>" + this.linebreak +
+                 "<ul>" + this.linebreak +
+                    "<li>start</li>" + this.linebreak +
+                    "<li>end</li>" + this.linebreak +
+                 "</ul>" + this.linebreak +
+               "</div>" + this.linebreak + this.linebreak;
+    result = this.writer.write(markdownObject);
+    assert.equal(result, expected, "start and end lists work!");
+
+    // normal list
+    markdownObject = {
+        "1": {
+            0: {
+                style: "startlistelement",
+                text: "start"
+            },
+            1: {
+                style: "listelement",
+                text: "middle"
+            },
+            2: {
+                style: "listelement",
+                text: "middle"
+            },
+            3: {
+                style: "endlistelement",
+                text: "end"
+            }
+        }
+    };
+    expected = "<div class='slide' id='slide1'>" + this.linebreak +
+                 "<ul>" + this.linebreak +
+                    "<li>start</li>" + this.linebreak +
+                    "<li>middle</li>" + this.linebreak +
+                    "<li>middle</li>" + this.linebreak +
+                    "<li>end</li>" + this.linebreak +
+                 "</ul>" + this.linebreak +
+               "</div>" + this.linebreak + this.linebreak;
+    result = this.writer.write(markdownObject);
+    assert.equal(result, expected, "normal lists work!");
 });
 
 QUnit.test("write multiple slides", function(assert)  {
@@ -572,7 +819,9 @@ QUnit.test("write multiple slides", function(assert)  {
             },
             2: {
                 style: "image",
-                text: "Koala.jpg"
+                text: "Koala.jpg",
+                caption: "",
+                reference: ""
             },
             3: {
                 style: "normaltext",
@@ -586,11 +835,15 @@ QUnit.test("write multiple slides", function(assert)  {
             },
             1: {
                 style: "image",
-                text: "Koala1.jpg"
+                text: "Koala1.jpg",
+                caption: "",
+                reference: ""
             },
             2: {
                 style: "image",
-                text: "Koala2.jpg"
+                text: "Koala2.jpg",
+                caption: "",
+                reference: ""
             },
             3: {
                 style: "normaltext",
@@ -700,7 +953,7 @@ QUnit.module("DOM", {
 
         // append generated html to specific div that is not visible
         $("body").append("<div id='domtest'></div>");
-        $("#domtest").hide();
+        //$("#domtest").hide();
         $("#domtest").append(generatedHtml);
 
     },
@@ -728,16 +981,24 @@ QUnit.test("test DOM elements", function(assert)  {
     assert.equal(result, expect, "#slide2 correct");
 
     // slide 3
-    expect = '\n<h1>title on 3nd slide!</h1>\n' +
-                '<p>only paragraph on 2nd slide</p>\n' +
-                '<h2>subtitle on 3nd slide!</h2>\n';
+    expect = '\n<h1>title on 3rd slide!</h1>\n' +
+                '<p>paragraph on 3rd slide</p>\n' +
+                '<ul>\n' +
+                    '<li>first list element</li>\n' +
+                    '<li>second list element</li>\n' +
+                    '<li>third list element</li>\n' +
+                '</ul>\n' +
+                '<h2>subtitle on 3rd slide!</h2>\n';
     result = $("#slide3").html();
     assert.equal(result, expect, "#slide3 correct");
 
     // slide 4
     expect = '\n<h1>title on 4th slide!</h1>\n' +
                 '<p>some text above the image</p>\n' +
+                '<figure>\n' +
                 '<img src="Koala.jpg">\n' +
+                '<figcaption>caption this!</figcaption>\n' +
+                '</figure>\n' +
                 '<p>some text below the image</p>\n';
     result = $("#slide4").html();
     assert.equal(result, expect, "#slide4 correct");
