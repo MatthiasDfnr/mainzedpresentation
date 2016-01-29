@@ -58,6 +58,9 @@ function Writer() {
                 } else if (element.style === "endlistelement") {
                     html += this.writeEndListElement(element) + this.LINEBREAK;
 
+                } else if (element.style === "break") {
+                    html += "<br></br>" + this.LINEBREAK;
+
                 } else {
                     html += this.writeNormalText(element) + this.LINEBREAK;
                 }

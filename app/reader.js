@@ -8,10 +8,11 @@ function Reader() {
         header2: "##",
         header3: "###",
         newslide: "---",
-        normaltext: "[note]",
+        normaltext: "[note]", // gets assigned automatically
         listelement: "*",
         bigtext: "[big]",
-        image: "[image]"
+        image: "[image]",
+        break: "[break]"  // gets assigned automatically
     };
 
     // holds the element of the last step,
@@ -30,7 +31,6 @@ function Reader() {
         // record all records
         var resultDict = {};
         for (var key in symbols) {
-
             var currentSymbol = symbols[key] + " ";
 
             // add space after symbol -> to allow hashtags
@@ -156,7 +156,10 @@ function Reader() {
 
         // append to element
         element.style = nextSymbol;
-        element.text = result;
+
+        if (nextSymbol !== "break") {  // skip breaks when assigning text
+            element.text = result;
+        }
 
         // intercept images because they are still in this format
         // (url, caption, reference)
@@ -278,26 +281,15 @@ function Reader() {
         var currentSlideDict = {};
 
         var currentString = slideString;
-        for (var i = 0; i < 100; i++) {
-            //console.log("ROUND: " + i);
+        for (var i = 0; i < 1000; i++) {
             // scan for symbol and use first one and save string to this point
 
             // check which symbol comes first -> use the index, then cut string at
             // that point and repeat with the resulting string -> also I need
             // the index of the next following markdown to cut the string between
             // first and second index
-            //console.log("current: " + currentString);
             var nextSymbol = this.getNextSymbol(currentString);
-            //console.log("current string: " + currentString);
-            //console.log("next symbol: " + nextSymbol);
-
             var element = this.getNextElement(currentString, nextSymbol);
-            //console.log("next String: " + nextString);  // this is wrong for last
-
-            // form object
-            //var currentObj = {};
-            //currentObj.style = nextSymbol;
-            //currentObj.text = nextString;
 
             // save step
             currentSlideDict[i] = element;
@@ -384,15 +376,20 @@ function Reader() {
             // \r\n should keep intact
             slideString = me.detectNormaltext(slideString, "\n");
 
-            while (slideString.indexOf("\r\n") > -1) {
-                slideString = slideString.replace(/\r/, "");
+            // detect extra breaks between paragraphs
+            while (slideString.indexOf("\r\n\r\n\r\n") > -1) {
+                slideString = slideString.replace(/\r\n\r\n\r\n/, " [break] ");
+            }
+
+            while (slideString.indexOf("\n\n\n") > -1) {
+                slideString = slideString.replace(/\n\n\n/, " [break] ");
             }
 
             // all line breaks get removed earlier
             // remove all line breaks -> cannot use readSlideMarkdown without
             // this function first, because readSlideMarkdown doesnt work with line breaks
             while (slideString.indexOf("\r\n") > -1) {
-                slideString = slideString.replace(/\r/, "");
+                slideString = slideString.replace(/\r\n/, "");
             }
             while (slideString.indexOf("\n") > -1) {
                 slideString = slideString.replace(/\n/, "");

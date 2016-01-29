@@ -374,6 +374,35 @@ QUnit.test("multiline for single slide", function(assert)  {
     assert.equal(JSON.stringify(result), JSON.stringify(expected));
 });
 
+QUnit.test("additional empty lines between paragraphs", function(assert)  {
+
+    var multiLineString = [
+        "## title on the very first slide",
+        "",
+        "",
+        "[note] normal text on the first slide"
+    ].join('\n');
+
+    var expected = {
+        "1": {
+            0: {
+                style: "header2",
+                text: "title on the very first slide"
+            },
+            1: {
+                style: "break"
+            },
+            2: {
+                style: "normaltext",
+                text: "normal text on the first slide"
+            }
+        }
+    };
+
+    var result = this.reader.read(multiLineString);
+    assert.equal(JSON.stringify(result), JSON.stringify(expected));
+});
+
 QUnit.test("multiline for multiple slides", function(assert)  {
 
     var multiLineString = [
@@ -815,6 +844,40 @@ QUnit.test("write lists", function(assert)  {
                "</div>" + this.linebreak + this.linebreak;
     result = this.writer.write(markdownObject);
     assert.equal(result, expected, "normal lists work!");
+});
+
+QUnit.test("write breaks", function(assert)  {
+    var markdownObject;
+    var expected;
+    var result;
+
+    // no caption
+    markdownObject = {
+        "1": {
+            0: {
+                style: "header1",
+                text: "title on the very first slide"
+            },
+            1: {
+                style: "break"
+            },
+            2: {
+                style: "break"
+            },
+            3: {
+                style: "normaltext",
+                text: "some text"
+            }
+        }
+    };
+    expected = "<div class='slide' id='slide1'>" + this.linebreak +
+                 "<h1>title on the very first slide</h1>" + this.linebreak +
+                 "<br></br>" + this.linebreak +
+                 "<br></br>" + this.linebreak +
+                 "<p>some text</p>" + this.linebreak +
+               "</div>" + this.linebreak + this.linebreak;
+    result = this.writer.write(markdownObject);
+    assert.equal(result, expected);
 });
 
 QUnit.test("write multiple slides", function(assert)  {
