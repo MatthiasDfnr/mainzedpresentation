@@ -25,14 +25,14 @@ var currentslide = 1;
 $(document.documentElement).keydown(function (e) {
     //var $activeslide = $('.slides.active'), $targetslide;
 
-    if (e.keyCode === 39) {
+    if (e.keyCode === 39 || e.keyCode === 34) {  // 43 is remote left
         // if ($activeslide.next('.slides').length) {}
         if (currentslide < $('.slide').length){
             currentslide += 1;
             location.hash = "#slide" + currentslide;
         }
     }
-    if (e.keyCode === 37) {
+    if (e.keyCode === 37 || e.keyCode === 33) {  // 33 is remote right
         console.log(currentslide);
         // if ($activeslide.prev('.slides').length) {}
         if (currentslide > 1) {
