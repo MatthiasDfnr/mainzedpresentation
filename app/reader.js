@@ -30,7 +30,16 @@ function Reader() {
         // record all records
         var resultDict = {};
         for (var key in symbols) {
-            var index = string.indexOf(symbols[key]);
+
+            var currentSymbol = symbols[key] + " ";
+
+            // add space after symbol -> to allow hashtags
+            // this prevents markdown symbols from working if the
+            // trailing whitespace after the symbol is missing!
+            // e.g. "# title" -> markdown: header1
+            // "#title" -> markdown: no markdown -> normaltext
+
+            var index = string.indexOf(currentSymbol);
 
             if (index > -1) {
                 //console.log("searching: " + string);

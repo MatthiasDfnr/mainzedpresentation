@@ -33,7 +33,7 @@ QUnit.test("getNextSymbol test", function(assert)  {
     result = this.reader.getNextSymbol(testString);
     assert.equal(result, "bigtext");
 
-    testString = "*This is a list element* ## whatever";
+    testString = "* This is a list element ## whatever";
     result = this.reader.getNextSymbol(testString);
     assert.equal(result, "listelement");
 
@@ -59,6 +59,11 @@ QUnit.test("getNextSymbol test", function(assert)  {
 
     // empty
     testString = " hello";
+    result = this.reader.getNextSymbol(testString);
+    assert.equal(result, undefined);
+
+    // allow hashtags when no space after #
+    testString = "This is a normal text with a #hashtag!";
     result = this.reader.getNextSymbol(testString);
     assert.equal(result, undefined);
 });
