@@ -8,7 +8,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
 	<link href='https://fonts.googleapis.com/css?family=Arimo:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
-	<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+	<script src="app/vendor/jquery-2.2.3.min.js"></script>
+
 	<script src="app/reader.js"></script>
 	<script src="app/writer.js"></script>
 	<script src="app/app.js"></script>
@@ -31,7 +32,7 @@
     		padding-top: 90px;
     	}
 
-		* {			font-family: "Arimo"; 
+		* {			font-family: "Arimo", Arial, sans-serif; 
 					margin: 0; padding: 0; 
 					letter-spacing: 0.03em; 
 					font-size: 70px;
@@ -46,7 +47,8 @@
 					margin-top: 10%;
 				}
 		#footer { border-bottom: 3px solid black; width: calc(100% - 100px); position: fixed; top: 0;}
-		#footer span {margin-top: -12px; font-family: "mainzed display type"; display: block; font-size: 50px; }
+
+		#counter {float: right; font-family: "Arimo"; height: 20px; font-size: 12px;}
 		li {margin-left: 65px;}
 		h1 {
 			margin-bottom: 100px; 
@@ -63,6 +65,8 @@
 
 <body>
 
-	<div id="footer"><span><img class="icon" src="mainzedicon.svg" width="30" /></span></div>
+	<div id="footer">
+	<span><img class="icon" src="mainzedicon.svg" width="30" /></span>
+	<span id="counter"></span></div>
 </body>
 </html>
