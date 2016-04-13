@@ -30,7 +30,7 @@ $(document.documentElement).keydown(function (e) {
         // if ($activeslide.next('.slides').length) {}
         if (currentslide < $('.slide').length){
             currentslide += 1;
-            $("#counter").text(currentslide);
+            $("#counter").text(currentslide + " / " + $('.slide').length );
             location.hash = "#slide" + currentslide;
         }
     }
@@ -39,7 +39,7 @@ $(document.documentElement).keydown(function (e) {
         // if ($activeslide.prev('.slides').length) {}
         if (currentslide > 1) {
             currentslide -= 1;
-            $("#counter").text(currentslide);
+            $("#counter").text(currentslide + " / " + $('.slide').length );
             location.hash = "#slide" + currentslide;
         }
     }

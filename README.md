@@ -1,5 +1,8 @@
 # mainzedpresentation
 
+firefox only!
+font arimo has to be installed on local system
+
 ## current syntax
 The available syntax is mainly [markdown](https://guides.github.com/features/mastering-markdown/), with some added tags for our specific needs.
 ### Headings

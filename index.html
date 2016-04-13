@@ -46,9 +46,10 @@
 					text-align: center;
 					margin-top: 10%;
 				}
-		#footer { border-bottom: 3px solid black; width: calc(100% - 100px); position: fixed; top: 0;}
-
-		#counter {float: right; font-family: "Arimo"; height: 20px; font-size: 12px;}
+		#footer { border-bottom: 3px solid black; width: calc(100% - 100px); position: fixed; top: 0; height: 60px;}
+		#footer span { display: block; max-width: 200px;}
+		#icon {float: left;}
+		#counter {float: right; font-family: "Arimo"; height: 20px; font-size: 20px; margin-top: 24px;}
 		li {margin-left: 65px;}
 		h1 {
 			margin-bottom: 100px; 
@@ -59,14 +60,14 @@
 		.slide img {text-align: center; width: 1000px; left: 50%; position: relative; 
 			margin-left: -500px;}
 		figcaption { text-align: center; font-size: 50px;}
-		img.icon {width: 30px;}
+		img.icon {width: 30px; display: block; margin-top: 20px;}
 	</style>
 </head>
 
 <body>
 
 	<div id="footer">
-	<span><img class="icon" src="mainzedicon.svg" width="30" /></span>
+	<span id="icon"><img class="icon" src="mainzedicon.svg" width="30" /></span>
 	<span id="counter"></span></div>
 </body>
 </html>
